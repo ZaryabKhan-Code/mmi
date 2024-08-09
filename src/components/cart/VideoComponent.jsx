@@ -7,7 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCirclePlay, faCirclePause } from '@fortawesome/free-solid-svg-icons';
 
-const VideoComponent = () => {
+const VideoComponent = ({ handleSubmit, loading }) => {
     const webcamRef = useRef(null);
     const mediaRecorderRef = useRef(null);
     const [capturing, setCapturing] = useState(false);
