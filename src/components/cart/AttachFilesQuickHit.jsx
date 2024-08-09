@@ -17,7 +17,7 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useCookies } from 'react-cookie';
 import VideoComponent from './VideoComponent';
 const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
-    const [activeComponent, setActiveComponent] = useState('audio');
+    const [activeComponent, setActiveComponent] = useState('video');
     const [activeIcon, setActiveIcon] = useState('video');
     const [loading, setLoading] = useState(false);
     const [cookies] = useCookies(['user']);
