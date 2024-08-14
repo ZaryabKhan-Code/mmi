@@ -217,8 +217,9 @@ const MainCart = () => {
             }
         } catch (error) {
             console.error('Error creating checkout session:', error);
+        } finally {
+            setLoadingpayment(false);
         }
-        setLoadingpayment(false);
     };
 
     return (
