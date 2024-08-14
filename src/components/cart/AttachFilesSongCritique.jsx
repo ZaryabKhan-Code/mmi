@@ -60,7 +60,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         formData.append('expertUserId', expertId);
         formData.append('orderNo', orderId);
         formData.append('message', message);
-        formData.append('messageType', 'audio');
+        formData.append('messageType', 'all');
         formData.append('orderType', type);
         formData.append('file', file);
 
