@@ -190,7 +190,7 @@ const SessionsTab = () => {
                             '&.Mui-selected': { color: 'black' }
                         }}
                     />
-                    <Tab
+                    {/* <Tab
                         label="Archived"
                         sx={{
                             textTransform: "capitalize",
@@ -200,7 +200,7 @@ const SessionsTab = () => {
                             fontWeight: value === 2 ? '600' : 'normal',
                             '&.Mui-selected': { color: 'black' }
                         }}
-                    />
+                    />  */}
                 </Tabs>
             </Box>
             {loading ?

@@ -26,14 +26,19 @@ const ProgressSession = ({ id, type }) => {
             try {
                 const response = await GetAllBookedSesssion(localStorage.getItem('token'), id);
                 console.log(response.data.session[0]);
-                setData(response.data.session[0]);
-                setAudio(response.data.session[0]?.chatMediaMessage);
+                if (type === 'completed') {
+                    setData(response.data.session[1]);
+                    setAudio(response.data.session[1]?.chatMediaMessage);
+                } else {
+                    setData(response.data.session[0]);
+                    setAudio(response.data.session[0]?.chatMediaMessage);
+                }
             } catch (error) {
                 console.log(error);
             }
         }
         fetchResponse();
-    }, [id]);
+    }, [id, type]);
 
     const handlePlayPause = () => {
         if (audioRef.current) {
