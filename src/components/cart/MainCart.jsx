@@ -11,7 +11,7 @@ import CustomSnackbar from '../../CustomSnackbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { setItemCount } from '../../store/cartSlice';
 import { loadStripe } from '@stripe/stripe-js';
-const stripePromise = loadStripe('pk_test_51PXu0JCB2pIPL2vxy0ZVuzFmR5Xer2mKYUMaceY8tFqV00kiLIwmMubP7WJlrySIUB0h8khq3wgAYoeI21Sa3LNM00Sn4czY69');
+const stripePromise = loadStripe('pk_live_51PPvgY07uj255Y7F5N1Ii8PXnUtaPxKtKQYU5bqjJBkSXCJGoflczWPnJ1pmaLGIbZ69hYdFm3IHxmEX3iySR9DL00ouVBToD4');
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -128,7 +128,7 @@ const MainCart = () => {
             const newItems = items.filter((_, i) => i !== index);
             setItems(newItems);
             setSelectedItems(prevSelected => prevSelected.filter(i => i !== index));
-            dispatch(setItemCount(newItems.length)); // Update itemCount in Redux
+            dispatch(setItemCount(newItems.length));
             setSnackbarMessage('Item deleted successfully');
             setSnackbarSeverity('success');
             setOpenSnackbar(true);
@@ -207,7 +207,7 @@ const MainCart = () => {
                     image: item.files[0] || "/images/demoContainer.jpeg"
                 }))
             });
-
+            console.log(data.id)
             const result = await stripe.redirectToCheckout({
                 sessionId: data.id,
             });

@@ -11,7 +11,7 @@ import { AddCard, GetAllCard, DeleteCard } from '../../services/payment';
 import CustomSnackbar from '../../CustomSnackbar';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-const stripePromise = loadStripe('pk_test_51PXu0JCB2pIPL2vxy0ZVuzFmR5Xer2mKYUMaceY8tFqV00kiLIwmMubP7WJlrySIUB0h8khq3wgAYoeI21Sa3LNM00Sn4czY69');
+const stripePromise = loadStripe('pk_live_51PPvgY07uj255Y7F5N1Ii8PXnUtaPxKtKQYU5bqjJBkSXCJGoflczWPnJ1pmaLGIbZ69hYdFm3IHxmEX3iySR9DL00ouVBToD4');
 
 const cardElementOptions = {
     style: {
