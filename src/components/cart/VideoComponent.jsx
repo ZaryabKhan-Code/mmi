@@ -1,9 +1,7 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
 import { Button, Grid, Typography, Box, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCirclePlay, faCirclePause } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,6 +11,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const [capturing, setCapturing] = useState(false);
     const [recordedChunks, setRecordedChunks] = useState([]);
     const [previewUrl, setPreviewUrl] = useState(null);
+    const [isWebcamReady, setIsWebcamReady] = useState(false); // Track webcam readiness
 
     const handleStartCaptureClick = useCallback(() => {
         setCapturing(true);
@@ -21,7 +20,14 @@ const VideoComponent = ({ handleSubmit, loading }) => {
         });
         mediaRecorderRef.current.addEventListener("dataavailable", handleDataAvailable);
         mediaRecorderRef.current.start();
-    }, [webcamRef, setCapturing, mediaRecorderRef]);
+
+        // Force stop recording after 59 seconds
+        setTimeout(() => {
+            if (mediaRecorderRef.current.state === "recording") {
+                mediaRecorderRef.current.stop();
+            }
+        }, 59000); // 59 seconds
+    }, [webcamRef]);
 
     const handleDataAvailable = useCallback(
         ({ data }) => {
@@ -29,19 +35,20 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 setRecordedChunks((prev) => prev.concat(data));
             }
         },
-        [setRecordedChunks]
+        []
     );
 
     const handleStopCaptureClick = useCallback(() => {
-        mediaRecorderRef.current.stop();
-        setCapturing(false);
-    }, [mediaRecorderRef, webcamRef, setCapturing]);
+        if (mediaRecorderRef.current.state === "recording") {
+            mediaRecorderRef.current.stop();
+            setCapturing(false);
+        }
+    }, []);
 
     const handleRetake = () => {
         setRecordedChunks([]);
         setPreviewUrl(null);
     };
-
 
     useEffect(() => {
         if (recordedChunks.length) {
@@ -97,15 +104,18 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                                     height: { ideal: 720 }
                                 }}
                                 style={{ width: '100%', height: 'auto', borderRadius: '10px' }}
+                                onLoadedData={() => setIsWebcamReady(true)} // Set webcam as ready when loaded
                             />
-                            {capturing ? (
-                                <IconButton onClick={handleStopCaptureClick} sx={{ mt: 2 }}>
-                                    <FontAwesomeIcon icon={faCirclePause} size="3x" color="#FF5A59" />
-                                </IconButton>
-                            ) : (
-                                <IconButton onClick={handleStartCaptureClick} sx={{ mt: 2 }}>
-                                    <FontAwesomeIcon icon={faCirclePlay} size="3x" color="#FF5A59" />
-                                </IconButton>
+                            {isWebcamReady && (
+                                capturing ? (
+                                    <IconButton onClick={handleStopCaptureClick} sx={{ mt: 2 }}>
+                                        <FontAwesomeIcon icon={faCirclePause} size="3x" color="#FF5A59" />
+                                    </IconButton>
+                                ) : (
+                                    <IconButton onClick={handleStartCaptureClick} sx={{ mt: 2 }}>
+                                        <FontAwesomeIcon icon={faCirclePlay} size="3x" color="#FF5A59" />
+                                    </IconButton>
+                                )
                             )}
                         </>
                     ) : (
