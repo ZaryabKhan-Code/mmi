@@ -282,24 +282,7 @@ const Navbar = () => {
                             </Grid>
                             <Grid item>
                                 <Link to={'/notifications'}>
-                                    <Badge
-                                        className="mt-1"
-                                        badgeContent={3}
-                                        sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "rgba(255, 255, 255, 1)",
-                                                backgroundColor: "rgba(255, 90, 89, 1)",
-                                            }
-                                        }}
-
-                                        overlap="circular"
-                                        anchorOrigin={{
-                                            vertical: 'top',
-                                            horizontal: 'right'
-                                        }}
-                                    >
-                                        <img src='/images/bell.svg' alt="Bell" style={{ cursor: "pointer", height: "23px" }} />
-                                    </Badge>
+                                    <img src='/images/bell.svg' alt="Bell" style={{ cursor: "pointer", height: "23px" }} />
                                 </Link>
                             </Grid>
                         </Grid>

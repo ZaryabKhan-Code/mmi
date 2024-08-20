@@ -1,7 +1,16 @@
 import axios from "axios";
 const BASE_URL = "https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/expert_user_dashboard";
 const BASE_URL_2 = "https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/user";
+const BASE_URL_3 = "https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/notification/user";
 
+export const UserNotifications = (token, Id) => {
+    return axios.get(`${BASE_URL_3}/active_session`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        params: { userId: Id }
+    });
+};
 
 export const ForgetPassword = (data, token) => {
 

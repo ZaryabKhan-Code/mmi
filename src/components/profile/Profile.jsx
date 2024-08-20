@@ -8,7 +8,6 @@ import ChangePassword from './ChangePassword';
 import Notifications from './Notifications';
 import { useCookies } from 'react-cookie';
 import { useNavigate, Link } from 'react-router-dom';
-import Cards from './Cards';
 
 
 const Profile = () => {

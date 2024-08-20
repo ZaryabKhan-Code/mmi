@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Box, Card, Grid, Typography, Avatar } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
@@ -25,12 +25,31 @@ const notificationsData = [
         date: '04.01.24 at 12:00pm EST',
     },
 ];
-
+import { useCookies } from 'react-cookie';
+import { UserNotifications } from '../../services/user';
 const Notifications = () => {
+    const [cookies, setCookie] = useCookies(['user']);
+    const userData = cookies.user;
+    const Id = userData ? userData?.id : null;
+    const [data, setData] = useState([])
+    useEffect(() => {
+        const fetchNotification = async () => {
+            try {
+                const response = await UserNotifications(localStorage.getItem('token'), Id);
+                console.log(response.data)
+                setData(response.data.Credits)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchNotification();
+    }, [Id])
+
+
     return (
         <Grid container className='mt-3' justifyContent="center">
             <Box sx={{ width: "100%", maxWidth: "490px" }} className='container'>
-                {notificationsData.map((notification) => (
+                {data.map((notification) => (
                     <Card
                         key={notification.id}
                         sx={{ textAlign: 'start', boxShadow: "none", backgroundColor: "rgba(255, 252, 249, 1)", marginBottom: 2 }}
@@ -42,8 +61,8 @@ const Notifications = () => {
                                         width: { xs: 60, sm: 70 },
                                         height: { xs: 60, sm: 70 },
                                     }}
-                                    src={notification.avatarSrc}
-                                >A</Avatar>
+                                    src={notification.files[0]}
+                                >{notification.name}</Avatar>
                             </Grid>
                             <Grid item xs sx={{ textAlign: 'left', marginTop: '5px' }}>
                                 <Typography
@@ -56,7 +75,7 @@ const Notifications = () => {
                                         fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1rem' }
                                     }}
                                 >
-                                    {notification.title}
+                                    {notification.name} has responded
                                 </Typography>
                                 <Typography
                                     variant="body1"
@@ -67,7 +86,7 @@ const Notifications = () => {
                                         fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1rem' }
                                     }}
                                 >
-                                    {notification.message}
+                                    {notification.orderType}
                                 </Typography>
                                 <Typography
                                     variant="body1"
@@ -78,9 +97,10 @@ const Notifications = () => {
                                         fontSize: { xs: '0.9rem', sm: '0.9rem', md: '0.9rem' }
                                     }}
                                 >
-                                    {notification.date}
+                                    {notification.createdAt}
                                 </Typography>
                                 <Link
+                                    href={`/sessions?id=${notification.id}&type=completed`}
                                     sx={{
                                         mt: 0,
                                         color: "#332E3C",

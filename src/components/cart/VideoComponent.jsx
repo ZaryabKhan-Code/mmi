@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
@@ -26,7 +27,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             if (mediaRecorderRef.current.state === "recording") {
                 mediaRecorderRef.current.stop();
             }
-        }, 59000); // 59 seconds
+        }, 59000);
     }, [webcamRef]);
 
     const handleDataAvailable = useCallback(
