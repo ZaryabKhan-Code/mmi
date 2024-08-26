@@ -2,29 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, Box, Card, Grid, Typography, Avatar } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-const notificationsData = [
-    {
-        id: 1,
-        avatarSrc: '/images/notificationdemo.svg',
-        title: 'Elliot Ives has responded!',
-        message: 'Song Critique',
-        date: '04.01.24 at 10:30am EST',
-    },
-    {
-        id: 2,
-        avatarSrc: '/images/notificationdemo.svg',
-        title: 'Jane Doe liked your post!',
-        message: 'New Like',
-        date: '04.01.24 at 11:00am EST',
-    },
-    {
-        id: 3,
-        avatarSrc: '/images/notificationdemo.svg',
-        title: 'John Smith followed you!',
-        message: 'New Follower',
-        date: '04.01.24 at 12:00pm EST',
-    },
-];
 import { useCookies } from 'react-cookie';
 import { UserNotifications } from '../../services/user';
 const Notifications = () => {

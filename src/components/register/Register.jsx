@@ -327,7 +327,9 @@ const Register = () => {
                             </Link>
                         </Grid>
                         <Grid item>
-                            <img src='/images/facebook.svg' style={{ cursor: "pointer" }} />
+                            <Link to="https://auth-mmi-2d2a7783994f.herokuapp.com/auth/facebook">
+                                <img src='/images/facebook.svg' style={{ cursor: "pointer" }} />
+                            </Link>
                         </Grid>
                     </Grid>
 

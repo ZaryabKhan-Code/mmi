@@ -170,15 +170,25 @@ const Main = () => {
                         style: { padding: 0 }
                     }}
                 >
-                    <MenuItem onClick={() => handleMenuItemClick('All Experts')} sx={{ color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600 }}><CheckIcon sx={{ marginRight: "15px" }} /> All Records</MenuItem>
+                    <MenuItem onClick={() => handleMenuItemClick('All Experts')} sx={{
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'All Experts' ? '#f4f4f4' : 'transparent',
+                    }}><CheckIcon sx={{ marginRight: "15px" }} /> All Experts</MenuItem>
                     <Divider className="m-0 p-0" />
-                    <MenuItem onClick={() => handleMenuItemClick('Musicians')} sx={{ color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600 }}><CheckIcon sx={{ marginRight: "15px" }} /> Musicians</MenuItem>
+                    <MenuItem onClick={() => handleMenuItemClick('Musicians')} sx={{
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'Musicians' ? '#f4f4f4' : 'transparent',
+                    }}><CheckIcon sx={{ marginRight: "15px" }} /> Musicians</MenuItem>
                     <Divider className="m-0 p-0" />
-                    <MenuItem onClick={() => handleMenuItemClick('Producers')} sx={{ color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600 }}><CheckIcon sx={{ marginRight: "15px" }} /> Producers</MenuItem>
+                    <MenuItem onClick={() => handleMenuItemClick('Producers')} sx={{
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'Producers' ? '#f4f4f4' : 'transparent',
+                    }}><CheckIcon sx={{ marginRight: "15px" }} /> Producers</MenuItem>
                     <Divider className="m-0 p-0" />
-                    <MenuItem onClick={() => handleMenuItemClick('Engineers')} disabled sx={{ color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600 }}><CheckIcon sx={{ marginRight: "15px" }} /> Engineers</MenuItem>
+                    <MenuItem onClick={() => handleMenuItemClick('Engineers')} disabled sx={{
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'Engineers' ? '#f4f4f4' : 'transparent',
+                    }}><CheckIcon sx={{ marginRight: "15px" }} /> Engineers</MenuItem>
                     <Divider className="m-0 p-0" />
-                    <MenuItem onClick={() => handleMenuItemClick('Management')} disabled sx={{ color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600 }}><CheckIcon sx={{ marginRight: "15px" }} /> Management</MenuItem>
+                    <MenuItem onClick={() => handleMenuItemClick('Management')} disabled sx={{
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'Management' ? '#f4f4f4' : 'transparent',
+                    }}><CheckIcon sx={{ marginRight: "15px" }} /> Management</MenuItem>
                 </Menu>
             </Card>
             <Grid container spacing={3} sx={{ mt: 0 }}>

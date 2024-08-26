@@ -35,7 +35,7 @@ const HelpSupport = () => {
     };
 
     const questions = [
-        { question: "How do I contact My Music Industry?", answer: "You can reach a My Music Industry representative by emailing us at <span style='color: rgba(255, 90, 89, 1);'>help@myindustry.io</span>" },
+        { question: "How do I contact My Music Industry?", answer: "You can reach a My Music Industry representative by emailing us at <span style='color: rgba(255, 90, 89, 1);'>support@myindustry.io</span>" },
         { question: "I haven’t received anything from my expert. What should I do?", answer: "" },
         { question: "How do I change my payment information?", answer: "" },
         { question: "How do I enable notifications?", answer: "" },

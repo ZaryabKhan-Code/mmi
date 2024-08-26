@@ -2,6 +2,7 @@ import { Box, Grid, Button, Typography, Divider, Card, SvgIcon } from '@mui/mate
 import React from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Landing = () => {
     const commonFontSize = {
@@ -97,28 +98,30 @@ const Landing = () => {
                     display: "flex",
                     justifyContent: 'center',
                 }}>
-                    <Button
-                        sx={{
-                            backgroundColor: "#FF5A59",
-                            fontSize: "15px",
-                            padding: {
-                                xs: "12px 80px",
-                                sm: "12px 130px",
-                                md: "12px 130px",
-                                lg: "12px 130px",
-                                xl: "12px 150px"
-                            },
-                            color: "#fff",
-                            borderRadius: "10px",
-                            textTransform: "capitalize",
-                            '&:hover': {
-                                backgroundColor: "#E04948",
-                            }
-                        }}
-                        className='mt-3'
-                    >
-                        Get Started
-                    </Button>
+                    <Link to={"/signup"}>
+                        <Button
+                            sx={{
+                                backgroundColor: "#FF5A59",
+                                fontSize: "15px",
+                                padding: {
+                                    xs: "12px 80px",
+                                    sm: "12px 130px",
+                                    md: "12px 130px",
+                                    lg: "12px 130px",
+                                    xl: "12px 150px"
+                                },
+                                color: "#fff",
+                                borderRadius: "10px",
+                                textTransform: "capitalize",
+                                '&:hover': {
+                                    backgroundColor: "#E04948",
+                                }
+                            }}
+                            className='mt-3'
+                        >
+                            Get Started
+                        </Button>
+                    </Link>
                 </Grid>
                 <Grid container justifyContent="center" alignItems="center" className='mt-3'>
                     <Grid item xs={6} sm={4}>
@@ -318,24 +321,28 @@ const Landing = () => {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Button
-                                sx={{
-                                    backgroundColor: "#FF5A59",
-                                    width: "100%",
-                                    padding: "14px 0px",
-                                    color: "#fff",
-                                    borderRadius: "10px",
-                                    fontSize: "15px",
-                                    textTransform: "capitalize",
-                                    textAlign: "center",
-                                    '&:hover': {
-                                        backgroundColor: "#E04948",
-                                    }
-                                }}
-                                className='mt-4'
-                            >
-                                Get Started
-                            </Button>
+
+                            <Link to={"/signup"}>
+                                <Button
+                                    sx={{
+                                        backgroundColor: "#FF5A59",
+                                        width: "100%",
+                                        padding: "14px 0px",
+                                        color: "#fff",
+                                        borderRadius: "10px",
+                                        fontSize: "15px",
+                                        textTransform: "capitalize",
+                                        textAlign: "center",
+                                        '&:hover': {
+                                            backgroundColor: "#E04948",
+                                        }
+                                    }}
+                                    className='mt-4'
+                                >
+                                    Get Started
+                                </Button>
+                            </Link>
+
                         </Box>
                     </Card>
                 </Box>
