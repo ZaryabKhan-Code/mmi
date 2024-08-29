@@ -26,6 +26,9 @@ const Inbox = lazy(() => import('./components/Inbox/Inbox'));
 const FieldsForgetPasssword = React.lazy(() => import('./components/login/FieldsForgetPassword'));
 import { jwtDecode } from 'jwt-decode';
 import Navbar from './components/Navbar';
+import Privacy from './components/landing/Privacy';
+import Deletion from './components/landing/Deletion';
+
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(['user']);
   const userData = cookies.user;
@@ -39,6 +42,8 @@ function App() {
         <Routes>
           <Route element={<PublicRoutes />}>
             <Route path='/' element={<Landing />} />
+            <Route path='/privacypolicy' element={<Privacy />} />
+            <Route path='/deletionpolicy' element={<Deletion />} />
             <Route path='/signup' element={<Register />} />
             <Route path='/login' element={<Login />} />
             <Route path='/getverify/:token' element={<FieldsForgetPasssword />} />
