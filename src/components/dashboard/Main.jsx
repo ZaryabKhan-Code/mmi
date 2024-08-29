@@ -40,7 +40,7 @@ const Main = () => {
 
         try {
             setLoading(true);
-            const response = await ExpertProfile(localStorage.getItem("token"), filter, { signal: abortControllerRef.current.signal });
+            const response = await ExpertProfile(localStorage.getItem('token'), filter, { signal: abortControllerRef.current.signal });
             setExperts(response.data);
             setFavoriteStatus(response.data.map(expert => expert.liked));
         } catch (error) {

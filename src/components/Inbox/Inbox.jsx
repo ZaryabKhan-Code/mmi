@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Tabs, Avatar, Tab, Grid, Divider, Typography } from '@mui/material';
 import queryString from 'query-string';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Message from './Message';
-
+import { GetAllAssistant } from '../../services/chat';
+import { useCookies } from 'react-cookie';
 const Inbox = () => {
     const smallFontSize = {
         xs: '15px',
@@ -13,11 +14,15 @@ const Inbox = () => {
         lg: '17px',
         xl: '17px'
     };
+    const [cookies] = useCookies(['user']);
+    const userData = cookies.user;
+    const userId = userData ? userData.id : null;
+    const userName = userData ? userData.firstName : null;
+
     const [value, setValue] = useState(0);
     const location = useLocation();
     const queryParams = queryString.parse(location.search);
     const { id } = queryParams;
-
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -25,11 +30,11 @@ const Inbox = () => {
     return (
         <Grid container className='container mt-4' sx={{ padding: "0px 30px 0px 40px" }} flexDirection={'column'}>
             {id && (
-                <>
+                <Link to={`/inbox`}>
                     <Grid item sx={{ mb: 2 }}>
                         <img src='/images/backArrow.svg' alt="Back" style={{ cursor: "pointer" }} />
                     </Grid>
-                </>
+                </Link>
             )}
             <Box sx={{ width: '100%' }}>
                 <Tabs
@@ -55,7 +60,7 @@ const Inbox = () => {
                 </Tabs>
                 <Divider />
                 <TabPanel value={value} index={0}>
-                    {id ? <Message /> : <ListUser />}
+                    {id ? <Message assistantId={id} userId={userId} userName={userName} /> : <ListUser />}
                 </TabPanel>
             </Box>
         </Grid>
@@ -86,11 +91,20 @@ const TabPanel = (props) => {
 
 
 const ListUser = () => {
-    const users = [
-        { name: 'Sandy - MMI Assistant', message: 'Hey, Landon. Sandy from MMI here. I’ll be here for any questions you might have. Let me know how things are going with your experience.', avatar: '/images/alice.jpg' },
-        { name: 'Dany - MMI Assistant', message: 'Hey, Landon. Sandy from MMI here. I’ll be here for any questions you might have. Let me know how things are going with your experience.', avatar: '/images/bob.jpg' },
-        { name: 'John - MMI Assistant', message: 'Hey, Landon. Sandy from MMI here. I’ll be here for any questions you might have. Let me know how things are going with your experience.', avatar: '/images/charlie.jpg' }
-    ];
+    const [users, setUsers] = useState([]); // State to hold the user data
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await GetAllAssistant(localStorage.getItem('token'));
+                setUsers(response.data.assistants); // Set the fetched data to the state
+            } catch (error) {
+                console.error('Error fetching data:', error.response ? error.response.data : error.message);
+            }
+        };
+
+        fetchUser();
+    }, []);
 
     const truncateMessage = (message, limit = 50) => {
         if (message.length > limit) {
@@ -103,52 +117,53 @@ const ListUser = () => {
         <Box sx={{ px: { xs: 1, sm: 2, md: 3 } }}>
             {users.map((user, index) => (
                 <React.Fragment key={index}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'start',
-                            gap: 0,
-                            mb: 2,
-                            mt: 2,
-                            flexDirection: { xs: 'row', sm: 'row' },
-                            textAlign: { xs: 'left', sm: 'left' }
-                        }}
-                    >
-                        <Avatar
-                            src={user.avatar}
-                            alt={user.name}
+                    <Link style={{ textDecoration: "none", color: 'black' }} to={`/inbox?id=${user.id}`}>
+                        <Box
                             sx={{
-                                mr: { xs: 1, sm: 1 },
-                                mb: { xs: 0, sm: 1 },
-                                width: { xs: 60, sm: 70 },
-                                height: { xs: 60, sm: 70 },
+                                display: 'flex',
+                                alignItems: 'start',
+                                gap: 0,
+                                mb: 2,
+                                mt: 2,
+                                flexDirection: { xs: 'row', sm: 'row' },
+                                textAlign: { xs: 'left', sm: 'left' }
                             }}
-                        />
-                        <Box>
-                            <Typography
-                                variant="subtitle1"
+                        >
+                            <Avatar
+                                src={user.profilePicture} // Use the profile picture from the API data
+                                alt={user.name}
                                 sx={{
-                                    fontWeight: 'bold',
-                                    mb: 0,
-                                    fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1rem' }
+                                    mr: { xs: 1, sm: 1 },
+                                    mb: { xs: 0, sm: 1 },
+                                    width: { xs: 60, sm: 70 },
+                                    height: { xs: 60, sm: 70 },
                                 }}
-
-                            >
-                                {user.name}
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    mb: 0,
-                                    maxWidth: { xs: '100%', sm: '80%' },
-                                    fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1rem' }
-                                }}
-                                lineHeight={1.2}
-                            >
-                                {truncateMessage(user.message)}
-                            </Typography>
+                            />
+                            <Box>
+                                <Typography
+                                    variant="subtitle1"
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        mb: 0,
+                                        fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1rem' }
+                                    }}
+                                >
+                                    {user.name} - MMI Assistant
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        mb: 0,
+                                        maxWidth: { xs: '100%', sm: '80%' },
+                                        fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1rem' }
+                                    }}
+                                    lineHeight={1.2}
+                                >
+                                    {truncateMessage(user.email)} {/* Use the email as the message */}
+                                </Typography>
+                            </Box>
                         </Box>
-                    </Box>
+                    </Link>
                     <Divider />
                 </React.Fragment>
             ))}
