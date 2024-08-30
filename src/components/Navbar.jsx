@@ -41,7 +41,7 @@ const Navbar = () => {
 
         '/signup', '/login', '/forgetpassword', '/cart',
         '/forgetpasswordconfirm', '/onboardingprofile', '/expert', '/favorites', '/credits', '/credits/quickhit', '/credits/songcritique', '/profile', '/notifications', '/sessions', '/help', '/inbox'
-        , '/addcards'
+        , '/addcards', '/cancel'
     ];
     useEffect(() => {
         if (location.pathname === '/expert/') {
@@ -93,7 +93,7 @@ const Navbar = () => {
                                 <Link to={'/'}>
                                     <img src="/images/logo.svg" alt="Logo" />
                                 </Link>
-                                {shouldDisplayButton || !location.pathname === '/cancel' && (
+                                {shouldDisplayButton && (
                                     <div>
                                         <Button
                                             onClick={() => navigate('/login')}
