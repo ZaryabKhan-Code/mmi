@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import axios from 'axios';
+import Loading from './components/Loading';
 
 const PrivateRoutes = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -33,7 +34,7 @@ const PrivateRoutes = () => {
     }, []);
 
     if (isAuthenticated === null) {
-        return <div>Loading...</div>; // Show a loading indicator while the token is being verified
+        return <Loading />
     }
 
     return isAuthenticated ? (
