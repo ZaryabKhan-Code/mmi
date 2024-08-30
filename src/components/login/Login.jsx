@@ -32,7 +32,6 @@ const Login = () => {
         setLoading(true);
         try {
             const response = await LoginUserPost(data);
-            console.log(response.data)
             localStorage.setItem('token', response.data.token)
             const decodedToken = jwtDecode(response.data.token);
             setCookie('user', JSON.stringify(decodedToken), {
@@ -50,7 +49,6 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
-        console.log(data);
     };
 
     const commonFontSize = {

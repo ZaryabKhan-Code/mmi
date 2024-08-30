@@ -13,13 +13,11 @@ const AuthSuccess = () => {
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const code = searchParams.get('code');
-        console.log(code);
         const fetchToken = async (code) => {
             try {
                 const response = await axios.get(`https://auth-mmi-2d2a7783994f.herokuapp.com/get-token?code=${code}`);
                 searchParams.delete('code')
                 const data = response.data;
-                console.log(data)
 
                 const authToken = data.token;
                 localStorage.setItem('token', authToken);
@@ -38,8 +36,6 @@ const AuthSuccess = () => {
                 }
 
             } catch (error) {
-                console.log('tokenCOming')
-                console.error('Error fetching token:', error);
                 navigate('/');
             }
         };
@@ -47,7 +43,6 @@ const AuthSuccess = () => {
         if (code) {
             fetchToken(code);
         } else {
-            console.error('Code not found in URL');
             navigate('/');
         }
     }, [navigate, setCookie, location]);

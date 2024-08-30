@@ -53,7 +53,6 @@ const UserProfile = () => {
     }, [id, navigate, userData]);
 
     const onSubmit = async (data) => {
-        console.log(data);
         setLoading(true)
         try {
             const formData = new FormData();
@@ -68,7 +67,6 @@ const UserProfile = () => {
                 const response = await fetch(selectedImage);
                 const blob = await response.blob();
                 formData.append('profilePicture', blob, 'profileImage.jpg');
-                console.log(blob)
             }
 
             const response = await UpdateUserProfile(localStorage.getItem("token"), formData)
@@ -82,7 +80,6 @@ const UserProfile = () => {
             });
             navigate('/expert')
         } catch (error) {
-            console.log(error)
         } finally {
             setLoading(false)
         }

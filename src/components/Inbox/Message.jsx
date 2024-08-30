@@ -15,10 +15,8 @@ const Message = ({ assistantId, userId, userName }) => {
         const fetchAgent = async () => {
             try {
                 const assistantRecord = await GetSingleAssistant(localStorage.getItem('token'), assistantId);
-                console.log(assistantRecord.data);
                 setStaticData(assistantRecord.data.assistants);
             } catch (error) {
-                console.log(error);
             }
         };
         const fetchResponse = async () => {
@@ -32,14 +30,12 @@ const Message = ({ assistantId, userId, userName }) => {
                     setAssistant(conversation.data.assistant);
                 }
             } catch (error) {
-                console.log(error);
             }
         };
         const fetchData = async () => {
             try {
                 await Promise.all([fetchResponse(), fetchAgent()]);
             } catch (error) {
-                console.log("Error in fetching data", error);
             }
         };
 
@@ -70,7 +66,6 @@ const Message = ({ assistantId, userId, userName }) => {
                     setUserMessage('');
                 }
             } catch (error) {
-                console.log(error);
             }
         }
     };

@@ -43,7 +43,6 @@ const MainCart = () => {
                 setItems(response.data.cartExpertUsers);
                 setType(response.data.type);
             } catch (error) {
-                console.error("Error fetching cart items:", error);
             } finally {
                 setLoading(false);
             }
@@ -158,7 +157,6 @@ const MainCart = () => {
 
     const handleDeleteSelected = async () => {
         if (items.length === 0) {
-            console.error("No items in cart to delete");
             setSnackbarMessage('No items to delete');
             setSnackbarSeverity('info');
             setOpenSnackbar(true);
@@ -207,16 +205,13 @@ const MainCart = () => {
                     image: item.files[0] || "/images/demoContainer.jpeg"
                 }))
             });
-            console.log(data.id)
             const result = await stripe.redirectToCheckout({
                 sessionId: data.id,
             });
 
             if (result.error) {
-                console.error(result.error.message);
             }
         } catch (error) {
-            console.error('Error creating checkout session:', error);
         } finally {
             setLoadingpayment(false);
         }

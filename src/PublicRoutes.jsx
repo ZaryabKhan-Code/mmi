@@ -13,7 +13,6 @@ const PublicRoutes = () => {
     try {
         decodedToken = token ? jwtDecode(token) : null;
     } catch (e) {
-        console.error('Invalid token:', e);
         decodedToken = null;
     }
 
@@ -23,7 +22,6 @@ const PublicRoutes = () => {
         if (fieldsCompeleteStatus === false) {
             return <Navigate to={`/profile/${decodedToken.id}`} />;
         } else {
-            console.log("fieldsCompeleteStatus", fieldsCompeleteStatus)
             return <Navigate to="/expert" />;
         }
     }

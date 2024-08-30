@@ -28,12 +28,12 @@ import { jwtDecode } from 'jwt-decode';
 import Navbar from './components/Navbar';
 import Privacy from './components/landing/Privacy';
 import Deletion from './components/landing/Deletion';
+const Cancel = React.lazy(() => import('./components/Cancel'));
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(['user']);
   const userData = cookies.user;
   const fieldsCompleteStatus = userData ? userData.fieldsCompeleteStatus : null;
-  console.log(cookies)
 
   return (
     <>
@@ -54,6 +54,8 @@ function App() {
 
           <Route element={<PrivateRoutes />}>
             <Route path='/profile/:name' element={<UserProfile />} />
+            <Route path='/cancel' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Cancel />} />
+
             <Route path='/profile' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />
             <Route path='/onboardingprofile' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />
             <Route path='/favorites' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />

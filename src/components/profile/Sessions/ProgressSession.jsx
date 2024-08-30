@@ -25,7 +25,6 @@ const ProgressSession = ({ id, type }) => {
         const fetchResponse = async () => {
             try {
                 const response = await GetAllBookedSesssion(localStorage.getItem('token'), id);
-                console.log(response.data.session[0]);
                 if (type === 'completed') {
                     setData(response.data.session[1]);
                     setAudio(response.data.session[1]?.chatMediaMessage);
@@ -34,7 +33,6 @@ const ProgressSession = ({ id, type }) => {
                     setAudio(response.data.session[0]?.chatMediaMessage);
                 }
             } catch (error) {
-                console.log(error);
             }
         }
         fetchResponse();

@@ -65,7 +65,6 @@ const Expert = () => {
                 ]);
                 setLoading(false);
             } catch (error) {
-                console.log(error);
                 setLoading(false);
             }
         }
@@ -111,13 +110,10 @@ const Expert = () => {
             "price": price,
             "status": "pending"
         };
-        console.log(cartData);
         try {
             const response = await CreateCart(localStorage.getItem('token'), cartData);
-            console.log(response);
             if (response.status === 201 || response.status === 200) {
                 const response_2 = await GetTotalCartItem(localStorage.getItem('token'), userData?.id);
-                console.log(response_2);
                 setSnackbarMessage('✅ Item added to cart successfully!');
                 setSnackbarSeverity('success');
                 setOpenSnackbar(true);
@@ -125,7 +121,6 @@ const Expert = () => {
                 dispatch(setItemCount(newCount));
             }
         } catch (error) {
-            console.error("Error adding to cart:", error);
             setSnackbarMessage('❌ Error adding item to cart. Please try again.');
             setSnackbarSeverity('error');
             setOpenSnackbar(true);

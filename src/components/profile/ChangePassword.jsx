@@ -50,7 +50,6 @@ const ChangePassword = () => {
             setSnackbarSeverity('success');
             setSnackbarMessage('Password Changed Successfully');
         } catch (error) {
-            console.log(error);
             setOpenSnackbar(true);
             setSnackbarSeverity('error');
             setSnackbarMessage('Failed to change password');

@@ -1,14 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import axios from 'axios';
 
 const PrivateRoutes = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('token'));
-    const token = localStorage.getItem('token');
+    const [isAuthenticated, setIsAuthenticated] = useState(null);
+
+    const verifyToken = async () => {
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            try {
+                const response = await axios.get('https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/token/verify', {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                if (response.status === 200) {
+                    setIsAuthenticated(true);
+                } else {
+                    setIsAuthenticated(false);
+                }
+            } catch (error) {
+                setIsAuthenticated(false);
+            }
+        } else {
+            setIsAuthenticated(false);
+        }
+    };
 
     useEffect(() => {
-        setIsAuthenticated(!!token);
-    }, [token]);
+        verifyToken();
+
+    }, []);
+
+    if (isAuthenticated === null) {
+        return <div>Loading...</div>; // Show a loading indicator while the token is being verified
+    }
 
     return isAuthenticated ? (
         <>

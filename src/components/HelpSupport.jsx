@@ -2,6 +2,7 @@ import { Accordion, AccordionSummary, AccordionDetails, Grid, Typography, Box, B
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const HelpSupport = () => {
     const commonFontSize = {
@@ -45,15 +46,17 @@ const HelpSupport = () => {
         <>
             <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: "0px 40px 0px 40px" }}>
                 <Grid item sx={{ mt: 1 }}>
-                    <img
-                        src='/images/backArrow.svg'
-                        alt="Back"
-                        style={{
-                            cursor: "pointer",
-                            width: imageSize.xs,
-                            height: imageSize.xs,
-                        }}
-                    />
+                    <Link to={'/expert'}>
+                        <img
+                            src='/images/backArrow.svg'
+                            alt="Back"
+                            style={{
+                                cursor: "pointer",
+                                width: imageSize.xs,
+                                height: imageSize.xs,
+                            }}
+                        />
+                    </Link>
                 </Grid>
                 <Grid item>
                     <Typography fontSize={commonFontSize} fontFamily={'Manrope'} fontWeight={500}>HELP & SUPPORT</Typography>

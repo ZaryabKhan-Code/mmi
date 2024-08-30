@@ -91,7 +91,6 @@ const CardForm = ({ handleClose, showSnackbar, setCards }) => {
         });
 
         if (error) {
-            console.error(error);
             showSnackbar('Failed to create payment method.', 'error');
         } else {
             try {
@@ -111,7 +110,6 @@ const CardForm = ({ handleClose, showSnackbar, setCards }) => {
                 showSnackbar('Card added successfully.', 'success');
                 handleClose();
             } catch (err) {
-                console.error(err);
                 showSnackbar('Failed to add card.', 'error');
             }
         }
@@ -201,7 +199,6 @@ const Cards = () => {
             setCards(prevCards => prevCards.filter(card => card.id !== cardId));
             showSnackbar('Card deleted successfully.', 'success');
         } catch (error) {
-            console.error('Error deleting card:', error);
             showSnackbar('Failed to delete card.', 'error');
         }
     };
@@ -211,7 +208,6 @@ const Cards = () => {
             setLoading(true);
             try {
                 const response = await GetAllCard(localStorage.getItem('token'), customerId);
-                console.log(response.data.paymentMethods.data);
                 if (response.data && response.data.paymentMethods.data) {
                     const transformedCards = response.data.paymentMethods.data.map(card => ({
                         id: card.id,
@@ -225,7 +221,6 @@ const Cards = () => {
                     setCards([]);
                 }
             } catch (error) {
-                console.error('Error fetching cards:', error);
                 setCards([]);
             }
             setLoading(false);

@@ -35,10 +35,8 @@ const FieldsForgetPassword = () => {
         const verifyToken = async () => {
             try {
                 const response = await VerifyForgetPasswordToken(tokenFromUrl);
-                console.log(response);
                 setTokenValid(true);
             } catch (error) {
-                console.log(error);
                 setTokenValid(false);
             } finally {
                 setLoading(false);
@@ -69,14 +67,12 @@ const FieldsForgetPassword = () => {
                 "new_password": data.confirmPassword,
                 "token": tokenFromUrl
             };
-            console.log(new_password)
             await ForgetPassword(new_password);
             setTokenValid(true);
             setOpenSnackbar(true);
             setSnackbarSeverity('success');
             setSnackbarMessage('Password Changed Successfully');
         } catch (error) {
-            console.log(error);
             setOpenSnackbar(true);
             setSnackbarSeverity('error');
             setSnackbarMessage('Failed to change password');
@@ -87,7 +83,6 @@ const FieldsForgetPassword = () => {
             await new Promise(resolve => setTimeout(resolve, 1500));
             navigate('/login')
         }
-        console.log(data);
     };
 
     const handleClickShowPassword = () => setShowPassword(!showPassword);

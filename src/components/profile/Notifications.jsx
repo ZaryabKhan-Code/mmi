@@ -13,10 +13,8 @@ const Notifications = () => {
         const fetchNotification = async () => {
             try {
                 const response = await UserNotifications(localStorage.getItem('token'), Id);
-                console.log(response.data)
                 setData(response.data.Credits)
             } catch (error) {
-                console.log(error)
             }
         }
         fetchNotification();

@@ -66,10 +66,8 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
 
         try {
             const response = await AddMessage(localStorage.getItem('token'), formData);
-            console.log(response);
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
         } catch (error) {
-            console.log(error);
         }
         setLoading(false);
     };
@@ -82,13 +80,11 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
                 const token = localStorage.getItem('token');
                 try {
                     const response = await GetCreditStatus(token, userId, creditId);
-                    console.log(response.data);
                     if (!response.data.status) {
                         setIsValidCredit(false);
                         navigate('/expert');
                     }
                 } catch (error) {
-                    console.error('Error fetching credit status:', error);
                     setIsValidCredit(false);
                     navigate('/expert');
                 }

@@ -45,7 +45,6 @@ const Main = () => {
             setFavoriteStatus(response.data.map(expert => expert.liked));
         } catch (error) {
             if (error.name !== 'AbortError') {
-                console.error(error);
             }
         } finally {
             setLoading(false);
@@ -83,7 +82,6 @@ const Main = () => {
             }
         } catch (error) {
             if (error.name !== 'AbortError') {
-                console.error('Failed to update favorite status:', error);
                 setOpenSnackbar(true);
                 setSnackbarSeverity('error');
                 setSnackbarMessage('⚠️ Error occurred!');

@@ -99,7 +99,6 @@ const ListUser = () => {
                 const response = await GetAllAssistant(localStorage.getItem('token'));
                 setUsers(response.data.assistants); // Set the fetched data to the state
             } catch (error) {
-                console.error('Error fetching data:', error.response ? error.response.data : error.message);
             }
         };
 

@@ -22,7 +22,6 @@ const Favorites = () => {
             setExperts(response.data);
             setFavoriteStatus(response.data.map(expert => expert.liked));
         } catch (error) {
-            console.error(error);
         } finally {
             setLoading(false);
         }
@@ -45,7 +44,6 @@ const Favorites = () => {
 
             const data = { userId: userId, expertId };
             const response = await ExpertLike(localStorage.getItem("token"), data);
-            console.log(response.data)
             if (response.status === 200) {
                 setOpenSnackbar(true);
                 setSnackbarSeverity('success');
@@ -66,7 +64,6 @@ const Favorites = () => {
                 setSnackbarMessage('❌ Update failed!');
             }
         } catch (error) {
-            console.error('Failed to update favorite status:', error);
             // Rollback the status update if the API call fails
             setFavoriteStatus(prevStatus => {
                 const updatedStatus = [...prevStatus];

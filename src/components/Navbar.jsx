@@ -24,10 +24,8 @@ const Navbar = () => {
         const fetchTotalItems = async () => {
             try {
                 const response = await GetTotalCartItem(localStorage.getItem('token'), userData?.id);
-                console.log(response.data);
                 setData(response.data.items);
             } catch (error) {
-                console.error('Error fetching cart items:', error);
             }
         };
         if (userData) {
@@ -40,6 +38,7 @@ const Navbar = () => {
     const isProfilePage = /^\/profile\/[^\/]+$/.test(location.pathname);
     const isExpert = /^\/expert\/[^\/]+$/.test(location.pathname);
     const excludedRoutes = [
+
         '/signup', '/login', '/forgetpassword', '/cart',
         '/forgetpasswordconfirm', '/onboardingprofile', '/expert', '/favorites', '/credits', '/credits/quickhit', '/credits/songcritique', '/profile', '/notifications', '/sessions', '/help', '/inbox'
         , '/addcards'
@@ -94,7 +93,7 @@ const Navbar = () => {
                                 <Link to={'/'}>
                                     <img src="/images/logo.svg" alt="Logo" />
                                 </Link>
-                                {shouldDisplayButton && (
+                                {shouldDisplayButton || !location.pathname === '/cancel' && (
                                     <div>
                                         <Button
                                             onClick={() => navigate('/login')}
@@ -108,7 +107,7 @@ const Navbar = () => {
                                         <img src='/images/bell.svg' alt="Bell" style={{ cursor: "pointer", height: "23px", marginTop: "10px" }} />
                                     </div>
                                 )}
-                                {(location.pathname === '/inbox' || location.pathname === '/help' || location.pathname === '/cart' || location.pathname === '/sessions' || location.pathname === '/expert' || isExpert || location.pathname === '/credits/quickhit' || location.pathname === '/credits/songcritique') && (
+                                {(location.pathname === '/cancel' || location.pathname === '/inbox' || location.pathname === '/help' || location.pathname === '/cart' || location.pathname === '/sessions' || location.pathname === '/expert' || isExpert || location.pathname === '/credits/quickhit' || location.pathname === '/credits/songcritique') && (
                                     <>
                                         {fieldsCompeleteStatus && (
                                             <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>

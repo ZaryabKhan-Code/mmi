@@ -21,10 +21,8 @@ const Credits = () => {
         setLoading(true);
         try {
             const response = await GetAllSesssion(localStorage.getItem("token"), userId);
-            console.log(response.data.Credits)
             setExperts(response.data.Credits);
         } catch (error) {
-            console.error(error);
         } finally {
             setLoading(false);
         }

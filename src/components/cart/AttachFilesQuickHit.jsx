@@ -31,10 +31,6 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
         lg: '3rem',
         xl: '3rem'
     };
-    console.log(orderId)
-    console.log(expertId)
-    console.log(creditId)
-    console.log(type)
 
 
     const handleAudioRecord = () => {
@@ -61,27 +57,21 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
         formData.append('messageType', messageType);
         formData.append('orderType', type);
         const fileExtension = messageType === 'audio' ? '.mp3' : '.mp4'; // Assuming .mp3 for audio, .mp4 for video
-        console.log("MessageType:", messageType)
         if (messageType === 'audio') {
             const response = await fetch(data);
             const blob = await response.blob();
             formData.append('file', blob, messageType + fileExtension);
-            console.log("blob:", blob)
         } else if (messageType === 'video') {
             const response = await fetch(data);
             const blob = await response.blob();
             formData.append('file', blob, messageType + fileExtension);
-            console.log("blob:", blob)
         } else {
             formData.append('message', data);
         }
-        console.log(data)
         try {
             const response = await AddMessage(localStorage.getItem('token'), formData);
-            console.log(response);
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
         } catch (error) {
-            console.log(error);
         }
         setLoading(false);
     };
@@ -94,13 +84,11 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
                 const token = localStorage.getItem('token');
                 try {
                     const response = await GetCreditStatus(token, userId, creditId);
-                    console.log(response.data);
                     if (!response.data.status) {
                         setIsValidCredit(false);
                         navigate('/expert');
                     }
                 } catch (error) {
-                    console.error('Error fetching credit status:', error);
                     setIsValidCredit(false);
                     navigate('/expert');
                 }
