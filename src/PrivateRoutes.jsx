@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import axios from 'axios';
@@ -5,9 +6,9 @@ import Loading from './components/Loading';
 
 const PrivateRoutes = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
+    const token = localStorage.getItem('token');
 
     const verifyToken = async () => {
-        const token = localStorage.getItem('token');
 
         if (token) {
             try {
@@ -31,7 +32,7 @@ const PrivateRoutes = () => {
     useEffect(() => {
         verifyToken();
 
-    }, []);
+    }, [token]);
 
     if (isAuthenticated === null) {
         return <Loading />
