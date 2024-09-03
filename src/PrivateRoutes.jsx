@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Loading from './components/Loading';
-
+import { useCookies } from 'react-cookie';
 const PrivateRoutes = () => {
+    const [, , removeCookie] = useCookies(['user']);
     const [isAuthenticated, setIsAuthenticated] = useState(null);
     const token = localStorage.getItem('token');
-    const navigate = useNavigate();
     const verifyToken = async () => {
 
         if (token) {
@@ -19,15 +19,21 @@ const PrivateRoutes = () => {
                     setIsAuthenticated(true);
                 } else {
                     setIsAuthenticated(false);
-                    navigate('/logout')
+                    localStorage.removeItem('token');
+                    removeCookie('user');
+
                 }
             } catch (error) {
                 setIsAuthenticated(false);
-                navigate('/logout')
+                localStorage.removeItem('token');
+                removeCookie('user');
+
             }
         } else {
             setIsAuthenticated(false);
-            navigate('/logout')
+            localStorage.removeItem('token');
+            removeCookie('user');
+
 
         }
     };
