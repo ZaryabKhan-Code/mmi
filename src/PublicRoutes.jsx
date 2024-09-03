@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import axios from 'axios';
 import Loading from './components/Loading';
 import { useCookies } from 'react-cookie';
+import { jwtDecode } from 'jwt-decode'; // Assuming you're using a library like `jwt-decode`
 
 const PublicRoutes = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -21,6 +23,7 @@ const PublicRoutes = () => {
 
                 if (response.status === 200) {
                     setIsAuthenticated(true);
+                    setTokenData(jwtDecode(token)); // Decode the token if it's valid
                 } else {
                     setIsAuthenticated(false);
                     localStorage.removeItem('token');
@@ -45,9 +48,6 @@ const PublicRoutes = () => {
         verifyToken();
     }, [token]);
 
-    if (isAuthenticated === null) {
-        return <Loading />;
-    }
 
     if (isAuthenticated) {
         if (fieldsCompeleteStatus === false) {
