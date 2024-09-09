@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
-import { Button, Grid, Typography, Box, IconButton } from '@mui/material';
+import { Button, Grid, Typography, Box, IconButton, CircularProgress } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCirclePlay, faCirclePause } from '@fortawesome/free-solid-svg-icons';
 
@@ -12,7 +12,9 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const [capturing, setCapturing] = useState(false);
     const [recordedChunks, setRecordedChunks] = useState([]);
     const [previewUrl, setPreviewUrl] = useState(null);
-    const [isWebcamReady, setIsWebcamReady] = useState(false); // Track webcam readiness
+    const [isWebcamReady, setIsWebcamReady] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const timerRef = useRef(null);
 
     const handleStartCaptureClick = useCallback(() => {
         setCapturing(true);
@@ -22,13 +24,23 @@ const VideoComponent = ({ handleSubmit, loading }) => {
         mediaRecorderRef.current.addEventListener("dataavailable", handleDataAvailable);
         mediaRecorderRef.current.start();
 
-        // Force stop recording after 59 seconds
         setTimeout(() => {
             if (mediaRecorderRef.current.state === "recording") {
                 mediaRecorderRef.current.stop();
             }
         }, 59000);
-    }, [webcamRef]);
+        setProgress(0);
+        timerRef.current = setInterval(() => {
+            setProgress(prev => {
+                if (prev >= 100) {
+                    handleStopCaptureClick();
+                    clearInterval(timerRef.current);
+                    return 100;
+                }
+                return prev + 1.66; // Update progress every second for 60 seconds
+            });
+        }, 1000);
+    }, [webcamRef, setCapturing, mediaRecorderRef]);
 
     const handleDataAvailable = useCallback(
         ({ data }) => {
@@ -43,12 +55,15 @@ const VideoComponent = ({ handleSubmit, loading }) => {
         if (mediaRecorderRef.current.state === "recording") {
             mediaRecorderRef.current.stop();
             setCapturing(false);
+            clearInterval(timerRef.current); // Clear the countdown timer
+
         }
-    }, []);
+    }, [mediaRecorderRef, webcamRef, setCapturing]);
 
     const handleRetake = () => {
         setRecordedChunks([]);
         setPreviewUrl(null);
+        setProgress(0);
     };
 
     useEffect(() => {
@@ -109,9 +124,27 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                             />
                             {isWebcamReady && (
                                 capturing ? (
-                                    <IconButton onClick={handleStopCaptureClick} sx={{ mt: 2 }}>
-                                        <FontAwesomeIcon icon={faCirclePause} size="3x" color="#FF5A59" />
-                                    </IconButton>
+                                    <Box sx={{ position: 'relative', display: 'inline-flex', mt: 2 }}>
+                                        <CircularProgress
+                                            variant="determinate"
+                                            value={progress}
+                                            size={80}
+                                            thickness={1}
+                                            sx={{
+                                                color: "#43B929",
+                                            }}
+                                        />
+                                        <IconButton onClick={handleStopCaptureClick}
+                                            sx={{
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: '50%',
+                                                transform: 'translate(-50%, -50%)'
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faCirclePause} size="3x" color="#FF5A59" />
+                                        </IconButton>
+                                    </Box>
                                 ) : (
                                     <IconButton onClick={handleStartCaptureClick} sx={{ mt: 2 }}>
                                         <FontAwesomeIcon icon={faCirclePlay} size="3x" color="#FF5A59" />

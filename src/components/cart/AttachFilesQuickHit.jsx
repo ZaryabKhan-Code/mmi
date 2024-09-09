@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Button, TextField, Grid, Typography, Box, IconButton, Tooltip, Card, CircularProgress } from '@mui/material';
+import { Button, TextField, Grid, Typography, Box, IconButton, Tooltip, Card } from '@mui/material';
 import React, { useState, useRef, useEffect } from 'react';
 import VideoCameraFrontIcon from '@mui/icons-material/VideoCameraFront';
 import MicIcon from '@mui/icons-material/Mic';
@@ -183,29 +183,20 @@ const AudioComponent = ({ handleSubmit, loading }) => {
         stopRecording,
         mediaRecorder,
     } = useAudioRecorder();
-
     const [recordingTime, setRecordingTime] = useState(0);
-    const [progress, setProgress] = useState(0); // For circular progress
+    const isLargeScreen = useMediaQuery('(min-width:600px)'); // Media query for larger screens
 
     useEffect(() => {
         let timer;
         if (isRecording && !isPaused) {
             timer = setInterval(() => {
-                setRecordingTime((prevTime) => {
-                    const newTime = prevTime + 1;
-                    setProgress((newTime / 60) * 100); // Update progress for 60 seconds
-                    if (newTime >= 60) {
-                        stopRecording(); // Stop recording automatically after 60 seconds
-                        clearInterval(timer);
-                    }
-                    return newTime;
-                });
+                setRecordingTime(prevTime => prevTime + 1);
             }, 1000);
         } else if (!isRecording || isPaused) {
             clearInterval(timer);
         }
         return () => clearInterval(timer);
-    }, [isRecording, isPaused, stopRecording]);
+    }, [isRecording, isPaused]);
 
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
@@ -230,41 +221,26 @@ const AudioComponent = ({ handleSubmit, loading }) => {
             <Box sx={{ boxShadow: 0, border: '1px solid rgba(152, 142, 169, 1)', borderRadius: "8px", textAlign: 'center', p: 1, pt: 2, pb: 2 }}>
                 <Grid container alignItems="center" spacing={1} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
                     <Grid item sx={{ mb: 1 }}>
-                        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                            <CircularProgress
-                                variant="determinate"
-                                value={progress}
-                                size={80}
-                                thickness={1}
-                                sx={{
-                                    color: "#43B929",
-                                }}
-                            />
-                            <IconButton
-                                onClick={isRecording && !isPaused ? pauseRecording : startRecording}
-                                sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
-                            >
-                                {isRecording && !isPaused ? (
-                                    <PauseCircleOutlineIcon fontSize="large" sx={{ color: "black" }} />
-                                ) : (
-                                    <PlayCircleOutlineIcon fontSize="large" sx={{ color: "black" }} />
-                                )}
-                            </IconButton>
-                        </Box>
+                        <div onClick={isRecording && !isPaused ? pauseRecording : startRecording} color="primary">
+                            {isRecording && !isPaused ?
+                                <PauseCircleOutlineIcon fontSize={isLargeScreen ? 'large' : 'large'} sx={{ color: "black" }} />
+                                :
+                                <PlayCircleOutlineIcon fontSize={isLargeScreen ? 'large' : 'large'} sx={{ color: "black" }} />
+                            }
+                        </div>
                     </Grid>
                     <Grid item>
                         {mediaRecorder && !isPaused && (
                             <LiveAudioVisualizer
-                                width={200}
+                                width={isLargeScreen ? 200 : 100}
                                 barColor='grey'
-                                height={60}
+                                height={isLargeScreen ? 60 : 40}
                                 mediaRecorder={mediaRecorder}
                             />
                         )}
                         {(!mediaRecorder || isPaused) && (
                             <img style={{ marginBottom: "5px" }}
-                                src="/wave.png"
-                                alt="audio waveform"
+                                src={isLargeScreen ? "/wave.png" : "/wave2.png"}
                             />
                         )}
                     </Grid>
