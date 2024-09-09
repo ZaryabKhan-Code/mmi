@@ -122,12 +122,13 @@ const MainCart = () => {
             cartId: parseInt(item.cartId),
             cartExpertUserIds: [item.id]
         }
+        const newItems = items.filter((_, i) => i !== index);
+        setItems(newItems);
+        setSelectedItems(prevSelected => prevSelected.filter(i => i !== index));
+        dispatch(setItemCount(newItems.length));
         try {
             await DeleteSignleItemCart(localStorage.getItem('token'), data_to_send);
-            const newItems = items.filter((_, i) => i !== index);
-            setItems(newItems);
-            setSelectedItems(prevSelected => prevSelected.filter(i => i !== index));
-            dispatch(setItemCount(newItems.length));
+
             setSnackbarMessage('Item deleted successfully');
             setSnackbarSeverity('success');
             setOpenSnackbar(true);
@@ -162,6 +163,8 @@ const MainCart = () => {
             setOpenSnackbar(true);
             return;
         }
+        setSelectedItems([]);
+        dispatch(setItemCount(newItems.length));
         const selectedIds = selectedItems.map(index => items[index].id);
         const cartId = items[0].cartId;
 
@@ -172,8 +175,7 @@ const MainCart = () => {
             });
             const newItems = items.filter((_, i) => !selectedItems.includes(i));
             setItems(newItems);
-            setSelectedItems([]);
-            dispatch(setItemCount(newItems.length));
+
             setSnackbarMessage('Selected items deleted successfully');
             setSnackbarSeverity('success');
             setOpenSnackbar(true);

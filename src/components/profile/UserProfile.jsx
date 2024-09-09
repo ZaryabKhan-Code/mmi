@@ -336,10 +336,12 @@ const UserProfile = () => {
                                                     return selected;
                                                 }}
                                             >
-                                                <MenuItem value="Design">Design</MenuItem>
-                                                <MenuItem value="Development">Development</MenuItem>
-                                                <MenuItem value="Marketing">Marketing</MenuItem>
-                                                <MenuItem value="Other">Other</MenuItem>
+                                                <MenuItem value="Musicians">Musicians</MenuItem>
+                                                <MenuItem value="Producers">Producers</MenuItem>
+                                                <MenuItem value="Engineers">Engineers</MenuItem>
+                                                <MenuItem value="Management">Management</MenuItem>
+                                                <MenuItem value="Labels">Labels</MenuItem>
+                                                <MenuItem value="PR">PR</MenuItem>
                                             </Select>
                                         )}
                                     />
