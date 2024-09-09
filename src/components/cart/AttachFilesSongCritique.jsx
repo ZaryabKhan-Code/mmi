@@ -33,7 +33,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
     const { getRootProps, getInputProps } = useDropzone({
         multiple: false,
         accept: { 'audio/mpeg': [], 'audio/wav': [], 'audio/aiff': [], 'video/mp4': [] },
-        maxSize: 52428800, // 50MB in bytes
+        maxSize: 52428800,
         onDrop: (acceptedFiles, fileRejections) => {
             if (fileRejections.length > 0) {
                 setErrorFiles('Please upload files in MP3, WAV, AIFF, or MP4 format, each not exceeding 50MB.');

@@ -128,7 +128,6 @@ const MainCart = () => {
         dispatch(setItemCount(newItems.length));
         try {
             await DeleteSignleItemCart(localStorage.getItem('token'), data_to_send);
-
             setSnackbarMessage('Item deleted successfully');
             setSnackbarSeverity('success');
             setOpenSnackbar(true);
