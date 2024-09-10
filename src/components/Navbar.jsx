@@ -110,7 +110,7 @@ const Navbar = () => {
                                                 <Link to={'/cart'}>
                                                     <Badge
                                                         className="mt-1"
-                                                        badgeContent={data || itemCount}
+                                                        badgeContent={itemCount}
                                                         sx={{
                                                             "& .MuiBadge-badge": {
                                                                 color: "rgba(255, 255, 255, 1)",
