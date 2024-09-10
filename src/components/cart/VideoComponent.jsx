@@ -154,42 +154,57 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                             />
                             {isWebcamReady && (
                                 capturing ? (
-                                    <Box sx={{ position: 'relative', display: 'inline-flex', mt: 2 }}>
-                                        <CircularProgress
-                                            variant="determinate"
-                                            value={progress}
-                                            size={60}
-                                            thickness={1}
-                                            sx={{
-                                                color: "#43B929",
-                                            }}
-                                        />
-                                        {!paused ? (
-                                            <IconButton onClick={handlePauseCaptureClick}
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+                                        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                                            <CircularProgress
+                                                variant="determinate"
+                                                value={progress}
+                                                size={60}
+                                                thickness={1}
                                                 sx={{
-                                                    position: 'absolute',
-                                                    top: '50%',
-                                                    left: '50%',
-                                                    transform: 'translate(-50%, -50%)'
+                                                    color: "#43B929",
                                                 }}
+                                            />
+                                            {!paused ? (
+                                                <IconButton
+                                                    onClick={handlePauseCaptureClick}
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: '50%',
+                                                        left: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon={faCirclePause} size="3x" color="#FF5A59" />
+                                                </IconButton>
+                                            ) : (
+                                                <IconButton
+                                                    onClick={handleResumeCaptureClick}
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: '50%',
+                                                        left: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon={faCirclePlay} size="3x" color="#FF5A59" />
+                                                </IconButton>
+                                            )}
+                                        </Box>
+                                        {capturing && (
+                                            <IconButton
+                                                onClick={handleStopCaptureClick}
+                                                sx={{ ml: 2, color: "#FF5A59" }}
                                             >
-                                                <FontAwesomeIcon icon={faCirclePause} size="3x" color="#FF5A59" />
-                                            </IconButton>
-                                        ) : (
-                                            <IconButton onClick={handleResumeCaptureClick}
-                                                sx={{
-                                                    position: 'absolute',
-                                                    top: '50%',
-                                                    left: '50%',
-                                                    transform: 'translate(-50%, -50%)'
-                                                }}
-                                            >
-                                                <FontAwesomeIcon icon={faCirclePlay} size="3x" color="#FF5A59" />
+                                                <FontAwesomeIcon icon={faSquare} size="3x" />
                                             </IconButton>
                                         )}
                                     </Box>
                                 ) : (
-                                    <IconButton onClick={handleStartCaptureClick} sx={{ mt: 2 }}>
+                                    <IconButton
+                                        onClick={handleStartCaptureClick}
+                                        sx={{ mt: 2 }}
+                                    >
                                         <FontAwesomeIcon icon={faCirclePlay} size="3x" color="#FF5A59" />
                                     </IconButton>
                                 )
