@@ -158,7 +158,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                                         <CircularProgress
                                             variant="determinate"
                                             value={progress}
-                                            size={80}
+                                            size={60}
                                             thickness={1}
                                             sx={{
                                                 color: "#43B929",
