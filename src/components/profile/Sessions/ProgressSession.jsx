@@ -32,6 +32,7 @@ const ProgressSession = ({ id, type }) => {
                     setData(response.data.session[0]);
                     setAudio(response.data.session[0]?.chatMediaMessage);
                 }
+                console.log(response.data)
             } catch (error) {
             }
         }
@@ -71,27 +72,29 @@ const ProgressSession = ({ id, type }) => {
                     <br />with {data.expertUserName}
                 </Typography>
                 {type === 'completed' && (
-                    <Button
-                        startIcon={<AddIcon />}
-                        className='mt-3'
-                        sx={{
-                            padding: { md: "6px 12px", sx: "3px 8px" },
-                            color: "rgba(152, 142, 169, 1)",
-                            fontSize: { md: "16px", sx: "12px" },
-                            fontFamily: "Manrope",
-                            fontWeight: 400,
-                            mb: 1.5,
-                            borderRadius: "15px",
-                            border: '1px solid rgba(152, 142, 169, 1)',
-                            textTransform: "none",
-                            textAlign: "center",
-                            '&:hover': {
-                                backgroundColor: "none",
-                            }
-                        }}
-                    >
-                        Book {data.expertUserName} again
-                    </Button>
+                    <Link to={`/expert`}>
+                        <Button
+                            startIcon={<AddIcon />}
+                            className='mt-3'
+                            sx={{
+                                padding: { md: "6px 12px", sx: "3px 8px" },
+                                color: "rgba(152, 142, 169, 1)",
+                                fontSize: { md: "16px", sx: "12px" },
+                                fontFamily: "Manrope",
+                                fontWeight: 400,
+                                mb: 1.5,
+                                borderRadius: "15px",
+                                border: '1px solid rgba(152, 142, 169, 1)',
+                                textTransform: "none",
+                                textAlign: "center",
+                                '&:hover': {
+                                    backgroundColor: "none",
+                                }
+                            }}
+                        >
+                            Book {data.expertUserName} again
+                        </Button>
+                    </Link>
                 )}
             </Grid>
             <Grid container>
