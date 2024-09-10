@@ -91,9 +91,9 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const handleRetake = () => {
         setRecordedChunks([]);
         setPreviewUrl(null);
-        setProgress(0); // Reset progress bar, but don't start recording again
-        setCapturing(false); // Reset capturing state
-        setPaused(false); // Ensure paused state is reset
+        setProgress(0);
+        setCapturing(false);
+        setPaused(false);
     };
 
     useEffect(() => {
@@ -160,7 +160,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                                                 variant="determinate"
                                                 value={progress}
                                                 size={60}
-                                                thickness={1}
+                                                thickness={2}
                                                 sx={{
                                                     color: "#43B929",
                                                 }}
@@ -175,7 +175,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                                                         transform: 'translate(-50%, -50%)',
                                                     }}
                                                 >
-                                                    <FontAwesomeIcon icon={faCirclePause} size="3x" color="#FF5A59" />
+                                                    <FontAwesomeIcon icon={faCirclePause} size="2x" color="#FF5A59" />
                                                 </IconButton>
                                             ) : (
                                                 <IconButton
@@ -187,7 +187,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                                                         transform: 'translate(-50%, -50%)',
                                                     }}
                                                 >
-                                                    <FontAwesomeIcon icon={faCirclePlay} size="3x" color="#FF5A59" />
+                                                    <FontAwesomeIcon icon={faCirclePlay} size="2x" color="#FF5A59" />
                                                 </IconButton>
                                             )}
                                         </Box>
@@ -196,7 +196,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                                                 onClick={handleStopCaptureClick}
                                                 sx={{ ml: 2, color: "#FF5A59" }}
                                             >
-                                                <FontAwesomeIcon icon={faSquare} size="3x" />
+                                                <FontAwesomeIcon icon={faSquare} size="2x" />
                                             </IconButton>
                                         )}
                                     </Box>
