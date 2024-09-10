@@ -13,7 +13,7 @@ import { GetTotalCartItem } from '../services/cart';
 import { useDispatch, useSelector } from 'react-redux';
 const Navbar = () => {
     const itemCount = useSelector((state) => state.cart.itemCount);
-
+    const dispatch = useDispatch();
     const [cookies] = useCookies(['user']);
     const userData = cookies.user;
     const PorfileImage = userData ? userData?.profilePicture : null;
@@ -22,19 +22,11 @@ const Navbar = () => {
     const fieldsCompeleteStatus = userData ? userData?.fieldsCompeleteStatus : null;
 
     useEffect(() => {
-        const fetchTotalItems = async () => {
-            try {
-                const response = await GetTotalCartItem(localStorage.getItem('token'), userData?.id);
-                setData(response.data.items);
-            } catch (error) {
-                console.error('Error fetching total items:', error);
-            }
-        };
-
         if (userData) {
-            fetchTotalItems();
+            dispatch(fetchItemCount(userData.id)); // Dispatch the thunk to fetch item count
         }
-    }, [itemCount]);
+    }, [dispatch, userData]);
+
 
 
     const location = useLocation();
@@ -118,7 +110,7 @@ const Navbar = () => {
                                                 <Link to={'/cart'}>
                                                     <Badge
                                                         className="mt-1"
-                                                        badgeContent={itemCount || data}
+                                                        badgeContent={data || itemCount}
                                                         sx={{
                                                             "& .MuiBadge-badge": {
                                                                 color: "rgba(255, 255, 255, 1)",
