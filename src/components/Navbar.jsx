@@ -18,7 +18,7 @@ const Navbar = () => {
     const userData = cookies.user;
     const PorfileImage = userData ? userData?.profilePicture : null;
     const Name = userData ? userData?.firstName : null;
-    const [data, setData] = useState(0)
+    const [data, setData] = useState(itemCount)
     const fieldsCompeleteStatus = userData ? userData?.fieldsCompeleteStatus : null;
     useEffect(() => {
         const fetchTotalItems = async () => {
@@ -114,7 +114,7 @@ const Navbar = () => {
                                                 <Link to={'/cart'}>
                                                     <Badge
                                                         className="mt-1"
-                                                        badgeContent={itemCount || data}
+                                                        badgeContent={data}
                                                         sx={{
                                                             "& .MuiBadge-badge": {
                                                                 color: "rgba(255, 255, 255, 1)",
