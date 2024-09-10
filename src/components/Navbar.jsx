@@ -11,6 +11,8 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import { useCookies } from 'react-cookie';
 import { GetTotalCartItem } from '../services/cart';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchItemCount } from '../store/cartSlice';
+
 const Navbar = () => {
     const itemCount = useSelector((state) => state.cart.itemCount);
     const dispatch = useDispatch();
