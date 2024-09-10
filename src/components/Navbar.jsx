@@ -34,7 +34,7 @@ const Navbar = () => {
         if (userData) {
             fetchTotalItems();
         }
-    }, [userData, itemCount]);
+    }, [itemCount]);
 
 
     const location = useLocation();
