@@ -163,6 +163,7 @@ const MainCart = () => {
             return;
         }
         setSelectedItems([]);
+        const newItems = items.filter((_, i) => !selectedItems.includes(i));
         dispatch(setItemCount(newItems.length));
         const selectedIds = selectedItems.map(index => items[index].id);
         const cartId = items[0].cartId;
@@ -172,7 +173,6 @@ const MainCart = () => {
                 cartId: cartId,
                 cartExpertUserIds: selectedIds
             });
-            const newItems = items.filter((_, i) => !selectedItems.includes(i));
             setItems(newItems);
 
             setSnackbarMessage('Selected items deleted successfully');
