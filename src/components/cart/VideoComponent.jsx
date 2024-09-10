@@ -5,10 +5,11 @@ import Webcam from 'react-webcam';
 import { Button, Grid, Typography, Box, IconButton, CircularProgress } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCirclePlay, faCirclePause } from '@fortawesome/free-solid-svg-icons';
+import RecordRTC from 'recordrtc';
 
 const VideoComponent = ({ handleSubmit, loading }) => {
     const webcamRef = useRef(null);
-    const mediaRecorderRef = useRef(null);
+    const recorderRef = useRef(null);
     const [capturing, setCapturing] = useState(false);
     const [recordedChunks, setRecordedChunks] = useState([]);
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -18,17 +19,21 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
     const handleStartCaptureClick = useCallback(() => {
         setCapturing(true);
-        mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-            mimeType: "video/webm"
-        });
-        mediaRecorderRef.current.addEventListener("dataavailable", handleDataAvailable);
-        mediaRecorderRef.current.start();
 
+        const stream = webcamRef.current.stream;
+        recorderRef.current = new RecordRTC(stream, {
+            type: 'video',
+            mimeType: 'video/webm'
+        });
+        recorderRef.current.startRecording();
+
+        // Automatically stop recording after 59 seconds
         setTimeout(() => {
-            if (mediaRecorderRef.current.state === "recording") {
-                mediaRecorderRef.current.stop();
+            if (recorderRef.current) {
+                handleStopCaptureClick();
             }
         }, 59000);
+
         setProgress(0);
         timerRef.current = setInterval(() => {
             setProgress(prev => {
@@ -40,25 +45,20 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 return prev + 1.66; // Update progress every second for 60 seconds
             });
         }, 1000);
-    }, [webcamRef, setCapturing, mediaRecorderRef]);
-
-    const handleDataAvailable = useCallback(
-        ({ data }) => {
-            if (data.size > 0) {
-                setRecordedChunks((prev) => prev.concat(data));
-            }
-        },
-        []
-    );
+    }, [webcamRef, setCapturing]);
 
     const handleStopCaptureClick = useCallback(() => {
-        if (mediaRecorderRef.current.state === "recording") {
-            mediaRecorderRef.current.stop();
+        if (recorderRef.current) {
+            recorderRef.current.stopRecording(() => {
+                const blob = recorderRef.current.getBlob();
+                setRecordedChunks([blob]);
+                const url = URL.createObjectURL(blob);
+                setPreviewUrl(url);
+            });
             setCapturing(false);
             clearInterval(timerRef.current); // Clear the countdown timer
-
         }
-    }, [mediaRecorderRef, webcamRef, setCapturing]);
+    }, []);
 
     const handleRetake = () => {
         setRecordedChunks([]);
@@ -68,7 +68,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
     useEffect(() => {
         if (recordedChunks.length) {
-            const blob = new Blob(recordedChunks, { type: "video/webm" });
+            const blob = recordedChunks[0]; // Get the recorded blob
             const url = URL.createObjectURL(blob);
             setPreviewUrl(url);
         }
