@@ -18,20 +18,24 @@ const Navbar = () => {
     const userData = cookies.user;
     const PorfileImage = userData ? userData?.profilePicture : null;
     const Name = userData ? userData?.firstName : null;
-    const [data, setData] = useState(itemCount)
+    const [data, setData] = useState(0)
     const fieldsCompeleteStatus = userData ? userData?.fieldsCompeleteStatus : null;
+
     useEffect(() => {
         const fetchTotalItems = async () => {
             try {
                 const response = await GetTotalCartItem(localStorage.getItem('token'), userData?.id);
                 setData(response.data.items);
             } catch (error) {
+                console.error('Error fetching total items:', error);
             }
         };
+
         if (userData) {
             fetchTotalItems();
         }
-    }, [userData]);
+    }, [userData, itemCount]);
+
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -114,7 +118,7 @@ const Navbar = () => {
                                                 <Link to={'/cart'}>
                                                     <Badge
                                                         className="mt-1"
-                                                        badgeContent={data}
+                                                        badgeContent={itemCount || data}
                                                         sx={{
                                                             "& .MuiBadge-badge": {
                                                                 color: "rgba(255, 255, 255, 1)",
