@@ -32,7 +32,7 @@ const ProgressSession = ({ id, type }) => {
                     setData(response.data.session[0]);
                     setAudio(response.data.session[0]?.chatMediaMessage);
                 }
-                console.log(response.data)
+
             } catch (error) {
             }
         }
@@ -72,7 +72,7 @@ const ProgressSession = ({ id, type }) => {
                     <br />with {data.expertUserName}
                 </Typography>
                 {type === 'completed' && (
-                    <Link to={`/expert/${data.expertUserid}`}>
+                    <Link to={`/expert/${data.expertUserId}`}>
                         <Button
                             startIcon={<AddIcon />}
                             className='mt-3'
