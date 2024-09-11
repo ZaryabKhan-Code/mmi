@@ -89,7 +89,7 @@ const Navbar = () => {
                         <>
                             <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: paddingValue }}>
                                 <Link to={'/'}>
-                                    <img src="/images/logo.svg" alt="Logo" />
+                                    <img src="/images/logo.svg" alt="Logo" width={50} />
                                 </Link>
                                 {shouldDisplayButton && (
                                     <div>
