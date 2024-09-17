@@ -213,9 +213,8 @@ const MainCart = () => {
             if (result.error) {
             }
         } catch (error) {
-        } finally {
-            setLoadingpayment(false);
         }
+        setLoadingpayment(false);
     };
 
     return (
