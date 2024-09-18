@@ -194,7 +194,7 @@ const MainCart = () => {
         try {
             const { data } = await axios.post('https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/user/create-checkout-session', {
                 customerId: userData?.customerId,
-                customerEmail: userData?.email,
+                customer_email: userData?.email,
                 amount: totalAmount,
                 userId: userId,
                 type: type,
