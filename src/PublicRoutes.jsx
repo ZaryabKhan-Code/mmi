@@ -51,7 +51,7 @@ const PublicRoutes = () => {
 
     if (isAuthenticated) {
         if (fieldsCompeleteStatus === false) {
-            return <Navigate to={`/profile/${tokenData.id}`} />;
+            return <Navigate to={`/profile/${tokenData.id}/new`} />;
         } else {
             return <Navigate to="/expert" />;
         }

@@ -40,7 +40,7 @@ const Login = () => {
                 sameSite: 'none',
                 secure: true,
             });
-            if (decodedToken.fieldsCompeleteStatus === false) { navigate(`/profile/${decodedToken.id}`); }
+            if (decodedToken.fieldsCompeleteStatus === false) { navigate(`/profile/${decodedToken.id}/new`); }
             else { navigate('/login') }
         } catch (error) {
             setOpenSnackbar(true);

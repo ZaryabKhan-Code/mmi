@@ -30,7 +30,7 @@ const AuthSuccess = () => {
                 });
 
                 if (decodedToken.fieldsCompeleteStatus === false) {
-                    navigate(`/profile/${decodedToken.id}`);
+                    navigate(`/profile/${decodedToken.id}/new`);
                 } else {
                     navigate('/expert'); // or any other route
                 }

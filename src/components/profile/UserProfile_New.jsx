@@ -48,10 +48,10 @@ const UserProfile = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        if (userData?.id !== parseInt(id, 10)) {
-            navigate(`/profile/${userData.id}`, { replace: true });
-        }
 
+        if (userData?.id !== parseInt(id, 10)) {
+            navigate(`/profile/${userData.id}/new`, { replace: true });
+        }
         setSelectedImage(userData.profilePicture || userData.profileUrl); // Set the selected image on component mount
     }, [id, navigate, userData]);
 
@@ -90,16 +90,16 @@ const UserProfile = () => {
     const [tags, setTags] = useState([]);
 
     const [inputValue, setInputValue] = useState('');
-    useEffect(() => {
-        if (userData && typeof userData.areaOfInterest === 'string') {
-            setTags(userData.areaOfInterest.split(',').map(tag => tag.trim()).filter(tag => tag));
-        }
-    }, [userData]);
     const CustomChip = styled(Chip)({
         '& .MuiChip-deleteIcon': {
             color: '#fff',
         },
     });
+    useEffect(() => {
+        if (userData && typeof userData.areaOfInterest === 'string') {
+            setTags(userData.areaOfInterest.split(',').map(tag => tag.trim()).filter(tag => tag));
+        }
+    }, [userData]);
 
     const Industry = [
         { title: 'Musicians' },
@@ -173,6 +173,19 @@ const UserProfile = () => {
     return (
 
         <AnimatePresence>
+            <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: paddingValue }}>
+                <Link to={'/'}>
+                    <img src="/images/logo.svg" alt="Logo" width={50} />
+                </Link>
+                <div>
+                    <Button
+                        onClick={() => navigate('/logout')}
+                        sx={{ textTransform: "capitalize", border: "1px solid #FF5A59", padding: "5px 20px", color: "#FF5A59", borderRadius: "8px" }}>
+                        logout
+                    </Button>
+                </div>
+            </Grid>
+
             <Grid className='container' sx={{
                 display: "flex", justifyContent: fieldsCompeleteStatus === false ? "center" : "space-between",
                 alignItems: "center", margin: "0px auto", marginTop: "40px", padding: "0px 45px 0px 25px"

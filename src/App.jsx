@@ -14,6 +14,7 @@ const ForgetPassword = lazy(() => import('./components/login/ForgetPassword'));
 const Login = lazy(() => import('./components/login/Login'));
 const ForgetPasswordConfirm = lazy(() => import('./components/login/ForgetPasswordConfirm'));
 const UserProfile = lazy(() => import('./components/profile/UserProfile'));
+const UserProfile_New = lazy(() => import('./components/profile/UserProfile_New'));
 const Profile = lazy(() => import('./components/profile/Profile'));
 const Dashboard = lazy(() => import('./components/dashboard/Main'));
 const Expert = lazy(() => import('./components/dashboard/Expert'));
@@ -53,23 +54,25 @@ function App() {
           </Route>
 
           <Route element={<PrivateRoutes />}>
+            <Route path='/profile/:name/new' element={<UserProfile_New />} />
             <Route path='/profile/:name' element={<UserProfile />} />
-            <Route path='/cancel' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Cancel />} />
 
-            <Route path='/profile' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />
-            <Route path='/onboardingprofile' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />
-            <Route path='/favorites' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />
-            <Route path='/credits' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />
-            <Route path='/changepassword' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />
-            <Route path='/notifications' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} />
-            <Route path='/help' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <HelpSupport />} />
-            <Route path='/inbox' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Inbox />} />
-            <Route path='/credits/quickhit' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <QuickHit />} />
-            <Route path='/credits/songcritique' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Songcritique />} />
-            <Route path='/sessions' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Sessions />} />
-            <Route path='/expert' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Dashboard />} />
-            <Route path='/expert/:id' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Expert />} />
-            <Route path='/cart' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Cart />} />
+            <Route path='/cancel' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Cancel />} />
+
+            <Route path='/profile' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Profile />} />
+            <Route path='/onboardingprofile' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Profile />} />
+            <Route path='/favorites' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Profile />} />
+            <Route path='/credits' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Profile />} />
+            <Route path='/changepassword' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Profile />} />
+            <Route path='/notifications' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Profile />} />
+            <Route path='/help' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <HelpSupport />} />
+            <Route path='/inbox' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Inbox />} />
+            <Route path='/credits/quickhit' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <QuickHit />} />
+            <Route path='/credits/songcritique' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Songcritique />} />
+            <Route path='/sessions' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Sessions />} />
+            <Route path='/expert' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Dashboard />} />
+            <Route path='/expert/:id' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Expert />} />
+            <Route path='/cart' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}/new`} replace /> : <Cart />} />
             {/* <Route path='/addcards' element={fieldsCompleteStatus === false ? <Navigate to={`/profile/${userData.id}`} replace /> : <Profile />} /> */}
 
             <Route path='/logout' element={<Logout />} />

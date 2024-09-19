@@ -33,7 +33,7 @@ const Navbar = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const isProfilePage = /^\/profile\/[^\/]+$/.test(location.pathname);
+    const isProfilePage = /^\/profile\/[^\/]+(\/new)?$/.test(location.pathname); // Updated regex to include /new
     const isExpert = /^\/expert\/[^\/]+$/.test(location.pathname);
     const excludedRoutes = [
 
