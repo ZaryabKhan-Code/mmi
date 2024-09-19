@@ -4,7 +4,7 @@ const BASE_URL_2 = "https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/user"
 const BASE_URL_3 = "https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/notification/user";
 
 export const UserNotifications = (token, Id) => {
-    return axios.get(`${BASE_URL_3}/notification/user`, {
+    return axios.get(`${BASE_URL_3}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         },
