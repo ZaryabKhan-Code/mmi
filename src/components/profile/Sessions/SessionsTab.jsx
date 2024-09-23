@@ -4,6 +4,8 @@ import { Grid, Tabs, Card, Tab, Box, Typography, Avatar, Skeleton } from '@mui/m
 import { GetSessionWithType } from '../../../services/sessions';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
+import { fetchNotification } from '../../../store/sessionNotificationSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const SessionsTab = () => {
     const [value, setValue] = useState(0);
@@ -13,6 +15,7 @@ const SessionsTab = () => {
     const [cookies] = useCookies(['user']);
     const userData = cookies.user;
     const userId = userData ? userData.id : null;
+    const sessionNotification = useSelector((state) => state.notification.notification);
 
     const fetchSessions = useCallback(async (type, signal) => {
         setLoading(true);
@@ -180,7 +183,24 @@ const SessionsTab = () => {
                         }}
                     />
                     <Tab
-                        label="Completed"
+                        label={
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                Completed
+                                {sessionNotification && (
+                                    <Box
+                                        sx={{
+                                            position: 'relative',
+                                            right: '2px',
+                                            top: '-6px',
+                                            width: '8px',  // Customize the size of the red dot
+                                            height: '8px', // Customize the size of the red dot
+                                            backgroundColor: '#FF5A59',
+                                            borderRadius: '50%',  // Make it circular
+                                        }}
+                                    />
+                                )}
+                            </Box>
+                        }
                         sx={{
                             textTransform: "capitalize",
                             fontFamily: "Manrope",

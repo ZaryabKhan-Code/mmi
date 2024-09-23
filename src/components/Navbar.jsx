@@ -12,9 +12,11 @@ import { useCookies } from 'react-cookie';
 import { GetTotalCartItem } from '../services/cart';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchItemCount } from '../store/cartSlice';
+import { fetchNotification } from '../store/sessionNotificationSlice';
 
 const Navbar = () => {
     const itemCount = useSelector((state) => state.cart.itemCount);
+    const sessionNotification = useSelector((state) => state.notification.notification);
     const dispatch = useDispatch();
     const [cookies] = useCookies(['user']);
     const userData = cookies.user;
@@ -25,7 +27,8 @@ const Navbar = () => {
 
     useEffect(() => {
         if (userData) {
-            dispatch(fetchItemCount(userData.id)); // Dispatch the thunk to fetch item count
+            dispatch(fetchItemCount(userData.id));
+            dispatch(fetchNotification(userData.id))
         }
     }, [dispatch, userData]);
 
@@ -146,14 +149,33 @@ const Navbar = () => {
                                                             <Box component={'img'} src='/images/Menu.png' className='mt-2 mr-1' sx={{ cursor: "pointer", height: 25, width: 25 }} />
                                                         )}
                                                     </Grid>
+
                                                     <Grid item>
-                                                        <Avatar
-                                                            src={PorfileImage}
-                                                            alt={Name}
-                                                            sx={{ width: 40, height: 40, marginLeft: "8px", marginRight: '-10px' }}
-                                                        />
+                                                        {/* Wrap Avatar in a Box to allow custom positioning */}
+                                                        <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                                                            <Avatar
+                                                                src={PorfileImage}
+                                                                alt={Name}
+                                                                sx={{ width: 40, height: 40, marginLeft: "8px", marginRight: '-10px' }}
+                                                            />
+
+                                                            {sessionNotification && (
+                                                                <Box
+                                                                    sx={{
+                                                                        position: 'absolute',
+                                                                        top: '-5px',     // Customize this to move the badge vertically
+                                                                        right: '-10px',   // Customize this to move the badge horizontally
+                                                                        width: '8px',  // Customize the size of the red dot
+                                                                        height: '8px', // Customize the size of the red dot
+                                                                        backgroundColor: '#FF5A59',
+                                                                        borderRadius: '50%',  // Make it circular
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </Box>
                                                     </Grid>
                                                 </Grid>
+
                                                 <Menu
                                                     anchorEl={anchorEl}
                                                     open={Boolean(anchorEl)}
@@ -202,7 +224,16 @@ const Navbar = () => {
                                                         }}
                                                     >
                                                         <EventNoteIcon sx={{ mr: 2 }} fontSize='small' />
-                                                        Sessions
+                                                        Sessions {sessionNotification && (
+                                                            <Box
+                                                                sx={{
+                                                                    ml: 0.5,
+                                                                    width: '8px',  // Customize the size of the red dot
+                                                                    height: '8px', // Customize the size of the red dot
+                                                                    backgroundColor: '#FF5A59',
+                                                                    borderRadius: '50%',  // Make it circular
+                                                                }}
+                                                            />)}
                                                     </MenuItem>
                                                     <MenuItem
                                                         onClick={() => { setAnchorEl(null); navigate('/inbox'); }}
