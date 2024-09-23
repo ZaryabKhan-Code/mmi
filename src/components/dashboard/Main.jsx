@@ -18,13 +18,13 @@ const Main = () => {
     const [experts, setExperts] = useState([]);
     const [favoriteStatus, setFavoriteStatus] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [selectedFilter, setSelectedFilter] = useState('All Experts');
+    const [selectedFilter, setSelectedFilter] = useState('Filter');
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const [cookies, setCookie] = useCookies(['user']);
     const userData = cookies.user;
     const userId = userData ? userData?.id : null;
-
+    console.log(selectedFilter)
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -52,7 +52,7 @@ const Main = () => {
     }, []);
 
     useEffect(() => {
-        const filter = selectedFilter === 'All Experts' ? '' : selectedFilter;
+        const filter = selectedFilter === ('Filter' || 'All Experts') ? '' : selectedFilter;
         debouncedFetchExperts(fetchExperts, filter);
     }, [fetchExperts, selectedFilter]);
 
@@ -98,9 +98,19 @@ const Main = () => {
     };
 
     const handleMenuItemClick = (filter) => {
-        setSelectedFilter(filter);
+        if (selectedFilter === filter) {
+            // If "All Experts" is already selected and clicked again, reset to "Filter"
+            if (filter === 'All Experts') {
+                setSelectedFilter('Filter');
+            }
+        } else {
+            setSelectedFilter(filter);
+        }
         setAnchorEl(null);
     };
+
+
+    const isAllExpertsSelected = () => selectedFilter === 'All Experts';
 
     const handleCardClick = (id) => {
         navigate(`/expert/${id}`);
@@ -168,25 +178,49 @@ const Main = () => {
                         style: { padding: 0 }
                     }}
                 >
+                    {/* MenuItem for "All Experts" */}
                     <MenuItem onClick={() => handleMenuItemClick('All Experts')} sx={{
-                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'All Experts' ? '#f4f4f4' : 'transparent',
-                    }}><CheckIcon sx={{ marginRight: "15px" }} /> All Experts</MenuItem>
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() ? '#f4f4f4' : 'transparent',
+                    }}>
+                        {isAllExpertsSelected() || selectedFilter === 'All Experts' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
+                        All Experts
+                    </MenuItem>
                     <Divider className="m-0 p-0" />
+
+                    {/* MenuItem for "Musicians" */}
                     <MenuItem onClick={() => handleMenuItemClick('Musicians')} sx={{
-                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'Musicians' ? '#f4f4f4' : 'transparent',
-                    }}><CheckIcon sx={{ marginRight: "15px" }} /> Musicians</MenuItem>
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() || selectedFilter === 'Musicians' ? '#f4f4f4' : 'transparent',
+                    }}>
+                        {isAllExpertsSelected() || selectedFilter === 'Musicians' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
+                        Musicians
+                    </MenuItem>
                     <Divider className="m-0 p-0" />
+
+                    {/* MenuItem for "Producers" */}
                     <MenuItem onClick={() => handleMenuItemClick('Producers')} sx={{
-                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'Producers' ? '#f4f4f4' : 'transparent',
-                    }}><CheckIcon sx={{ marginRight: "15px" }} /> Producers</MenuItem>
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() || selectedFilter === 'Producers' ? '#f4f4f4' : 'transparent',
+                    }}>
+                        {isAllExpertsSelected() || selectedFilter === 'Producers' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
+                        Producers
+                    </MenuItem>
                     <Divider className="m-0 p-0" />
+
+                    {/* MenuItem for "Engineers" */}
                     <MenuItem onClick={() => handleMenuItemClick('Engineers')} disabled sx={{
-                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'Engineers' ? '#f4f4f4' : 'transparent',
-                    }}><CheckIcon sx={{ marginRight: "15px" }} /> Engineers</MenuItem>
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() || selectedFilter === 'Engineers' ? '#f4f4f4' : 'transparent',
+                    }}>
+                        {isAllExpertsSelected() || selectedFilter === 'Engineers' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
+                        Engineers
+                    </MenuItem>
                     <Divider className="m-0 p-0" />
+
+                    {/* MenuItem for "Management" */}
                     <MenuItem onClick={() => handleMenuItemClick('Management')} disabled sx={{
-                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilter === 'Management' ? '#f4f4f4' : 'transparent',
-                    }}><CheckIcon sx={{ marginRight: "15px" }} /> Management</MenuItem>
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() || selectedFilter === 'Management' ? '#f4f4f4' : 'transparent',
+                    }}>
+                        {isAllExpertsSelected() || selectedFilter === 'Management' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
+                        Management
+                    </MenuItem>
                 </Menu>
             </Card>
             <Grid container spacing={3} sx={{ mt: 0 }}>
