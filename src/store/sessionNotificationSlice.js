@@ -9,6 +9,7 @@ export const fetchNotification = createAsyncThunk(
             const response = await GetSessionNotification(token, userId);
             return response.data.Credit;
         } catch (error) {
+            console.log(error)
             return rejectWithValue(error.response.data);
         }
     }

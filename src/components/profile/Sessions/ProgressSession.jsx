@@ -22,6 +22,9 @@ const ProgressSession = ({ id, type }) => {
     };
 
     useEffect(() => {
+        const fetchNotification = async () => {
+            try { } catch (error) { }
+        }
         const fetchResponse = async () => {
             try {
                 const response = await GetAllBookedSesssion(localStorage.getItem('token'), id);
@@ -36,6 +39,7 @@ const ProgressSession = ({ id, type }) => {
             } catch (error) {
             }
         }
+        fetchNotification();
         fetchResponse();
     }, [id, type]);
 

@@ -12,6 +12,16 @@ export const GetSessionNotification = (token, Id) => {
     });
 };
 
+
+export const PostSessionNotification = (token, data) => {
+    return axios.post(`${BASE_URL_3}`, data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+};
+
 export const UserNotifications = (token, Id) => {
     return axios.get(`${BASE_URL_3}`, {
         headers: {
