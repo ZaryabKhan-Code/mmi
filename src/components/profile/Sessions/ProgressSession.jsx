@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import React, { useRef, useEffect, useState } from 'react';
 import { Grid, Divider, Typography, Button, Card, CardContent, Box, Avatar } from '@mui/material';
@@ -8,13 +9,18 @@ import { Player, ControlBar, BigPlayButton } from 'video-react';
 import "video-react/dist/video-react.css";
 import { Link } from 'react-router-dom';
 import { GetAllBookedSesssion } from '../../../services/sessions';
-
+import { PostSessionNotification } from '../../../services/user';
+import { useCookies } from 'react-cookie';
+import { useDispatch } from 'react-redux';
 const ProgressSession = ({ id, type }) => {
     const audioRef = useRef(null);
     const [data, setData] = useState([]);
     const [audio, setAudio] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
-
+    const [cookies] = useCookies(['user']);
+    const userData = cookies.user;
+    const dispatch = useDispatch();
+    const user_Id = userData ? userData?.id : null;
     const commonFontSize = {
         xs: '0.9rem',
         sm: '1.5rem',
@@ -23,7 +29,15 @@ const ProgressSession = ({ id, type }) => {
 
     useEffect(() => {
         const fetchNotification = async () => {
-            try { } catch (error) { }
+            const data = {
+                userId: user_Id,
+                creditId: parseInt(id)
+            }
+            try {
+                await PostSessionNotification(localStorage.getItem('token'), data);
+            } catch (error) {
+                console.log(error)
+            }
         }
         const fetchResponse = async () => {
             try {

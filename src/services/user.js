@@ -4,7 +4,7 @@ const BASE_URL_2 = "https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/user"
 const BASE_URL_3 = "https://mmi-mymusicindustry-f5f4aaf34e0e.herokuapp.com/notification/user";
 
 export const GetSessionNotification = (token, Id) => {
-    return axios.get(`${BASE_URL_3}`, {
+    return axios.get(`${BASE_URL_3}/credit_status_all`, {
         headers: {
             'Authorization': `Bearer ${token}`
         },
@@ -14,7 +14,7 @@ export const GetSessionNotification = (token, Id) => {
 
 
 export const PostSessionNotification = (token, data) => {
-    return axios.post(`${BASE_URL_3}`, data, {
+    return axios.post(`${BASE_URL_3}/credit_status`, data, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

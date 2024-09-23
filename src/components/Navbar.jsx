@@ -310,7 +310,25 @@ const Navbar = () => {
                             </Grid>
                             <Grid item>
                                 <Link to={'/notifications'}>
-                                    <img src='/images/bell.svg' alt="Bell" style={{ cursor: "pointer", height: "23px" }} />
+                                    <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                                        {/* Bell Icon */}
+                                        <img src='/images/bell.svg' alt="Bell" style={{ cursor: "pointer", height: "23px" }} />
+
+                                        {/* Red Dot - only shown if `sessionNotification` is true */}
+                                        {sessionNotification && (
+                                            <Box
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: 0,        // Adjust as necessary to position on the bell
+                                                    right: 0,      // Adjust as necessary to position on the bell
+                                                    width: '8px',  // Customize the size of the red dot
+                                                    height: '8px', // Customize the size of the red dot
+                                                    backgroundColor: '#FF5A59',
+                                                    borderRadius: '50%',  // Make it circular
+                                                }}
+                                            />
+                                        )}
+                                    </Box>
                                 </Link>
                             </Grid>
                         </Grid>
