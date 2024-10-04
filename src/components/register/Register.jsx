@@ -72,7 +72,7 @@ const Register = () => {
         >
             <Card className='mt-4' sx={{ display: "flex", padding: "0px 20px 0px 30px", flexDirection: "column", border: 'none', boxShadow: 'none', width: '100%', maxWidth: '400px', backgroundColor: "rgba(255, 252, 249, 1)" }}>
                 <Box>
-                    <Link to={'/login'}>
+                    <Link to={'/'}>
                         <img src='/images/backArrow.svg' style={{ cursor: "pointer" }} />
                     </Link>
                 </Box>

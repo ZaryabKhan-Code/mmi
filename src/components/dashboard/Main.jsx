@@ -215,11 +215,25 @@ const Main = () => {
                     <Divider className="m-0 p-0" />
 
                     {/* MenuItem for "Management" */}
-                    <MenuItem onClick={() => handleMenuItemClick('Management')} disabled sx={{
-                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() || selectedFilter === 'Management' ? '#f4f4f4' : 'transparent',
+                    <MenuItem onClick={() => handleMenuItemClick('Labels')} disabled sx={{
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() || selectedFilter === 'Labels' ? '#f4f4f4' : 'transparent',
                     }}>
-                        {isAllExpertsSelected() || selectedFilter === 'Management' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
-                        Management
+                        {isAllExpertsSelected() || selectedFilter === 'Labels' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
+                        Labels
+                    </MenuItem>
+
+                    <MenuItem onClick={() => handleMenuItemClick('MGMT')} disabled sx={{
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() || selectedFilter === 'MGMT' ? '#f4f4f4' : 'transparent',
+                    }}>
+                        {isAllExpertsSelected() || selectedFilter === 'MGMT' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
+                        MGMT
+                    </MenuItem>
+
+                    <MenuItem onClick={() => handleMenuItemClick('PR')} disabled sx={{
+                        color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: isAllExpertsSelected() || selectedFilter === 'PR' ? '#f4f4f4' : 'transparent',
+                    }}>
+                        {isAllExpertsSelected() || selectedFilter === 'PR' ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
+                        PR
                     </MenuItem>
                 </Menu>
             </Card>

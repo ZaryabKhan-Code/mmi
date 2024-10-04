@@ -105,7 +105,7 @@ const UserProfile = () => {
         { title: 'Musicians' },
         { title: 'Producers' },
         { title: 'Engineers' },
-        { title: 'Management' },
+        { title: 'MGMT' },
         { title: 'Labels' },
         { title: 'PR' },
     ];

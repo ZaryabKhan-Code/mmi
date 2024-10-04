@@ -105,7 +105,7 @@ const UserProfile = () => {
         { title: 'Musicians' },
         { title: 'Producers' },
         { title: 'Engineers' },
-        { title: 'Management' },
+        { title: 'MGMT' },
         { title: 'Labels' },
         { title: 'PR' },
     ];
@@ -152,7 +152,6 @@ const UserProfile = () => {
         const file = event.target.files[0];
         if (file) {
             const imageUrl = URL.createObjectURL(file);
-
             setSelectedImage(imageUrl);
         }
     };
