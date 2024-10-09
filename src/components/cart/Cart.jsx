@@ -20,11 +20,11 @@ const Cart = () => {
                 <MainCart />
             )}
             {(orderId && isComplete === 'true' && (type === 'Quick Hit' || type === 'Song Critique')) ? (
-                <PaymentComplete type={type} orderId={orderId} expertName={expertName} expertId={expertID || expertId} creditId={creditId} />
+                <PaymentComplete type={type === 'Song Critique' ? 'Pro Review' : undefined} orderId={orderId} expertName={expertName} expertId={expertID || expertId} creditId={creditId} />
             ) : (orderId && (type === 'Quick Hit' || type === 'Song Critique') && isSent === 'true') ? (
                 <FileSentSongCritique />
             ) : (orderId && type === 'Song Critique') ? (
-                <AttachFilesSongCritique type={type} orderId={orderId} expertId={expertID || expertId} creditId={creditId} />
+                <AttachFilesSongCritique type={'Pro Review'} orderId={orderId} expertId={expertID || expertId} creditId={creditId} />
             ) : (orderId && type === 'Quick Hit') ? (
                 <AttachFilesQuickHit type={type} orderId={orderId} expertId={expertID || expertId} creditId={creditId} />
             ) : null}

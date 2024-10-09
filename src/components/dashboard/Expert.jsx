@@ -28,7 +28,7 @@ const Expert = () => {
 
     const [cardData, setCardData] = useState([
         {
-            title: "Pro Review",
+            title: "Quick Hit",
             price: "",
             features: [
                 "Video messaging",
@@ -38,7 +38,7 @@ const Expert = () => {
             ]
         },
         {
-            title: "Song Feedback",
+            title: "Pro Review",
             price: "",
             features: [
                 "Get legitimate feedback on songs or lyrics",
@@ -88,8 +88,7 @@ const Expert = () => {
     };
 
     const handleAddToCart = async (type, price, index) => {
-        // Check if the type is "Song Feedback" and change it to "Song Critique"
-        if (type === "Song Feedback") {
+        if (type === "Pro Review") {
             type = "Song Critique";
         }
 
