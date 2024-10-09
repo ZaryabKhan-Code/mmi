@@ -152,7 +152,7 @@ const Navbar = () => {
 
                                                     <Grid item>
                                                         {/* Wrap Avatar in a Box to allow custom positioning */}
-                                                        <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                                                        <Box sx={{}}>
                                                             <Avatar
                                                                 src={PorfileImage}
                                                                 alt={Name}
