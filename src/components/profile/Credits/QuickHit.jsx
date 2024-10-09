@@ -50,7 +50,7 @@ const QuickHit = () => {
                     />
                 </Card>
                 <Box className='mt-2' sx={{ textAlign: "center" }}>
-                    <Typography variant="h5" fontSize={commonFontSize} component="div" fontWeight={700} sx={{ color: "#43B929", fontFamily: 'Manrope' }}>Quick Hit Credit</Typography>
+                    <Typography variant="h5" fontSize={commonFontSize} component="div" fontWeight={700} sx={{ color: "#43B929", fontFamily: 'Manrope' }}>Pro Review Credit</Typography>
                     <Typography variant="body1" fontSize={smallFontSize} fontWeight={400} sx={{ color: "#BBBBBB", fontFamily: 'Manrope' }}>Order number: #{orderId}</Typography>
                     <Box className='mt-3 container' sx={{ maxWidth: '700px' }}>
                         <Typography variant="body1" fontSize={smallFontSize} fontWeight={300} sx={{ color: "#332E3C", fontFamily: 'Manrope' }}>

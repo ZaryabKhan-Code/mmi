@@ -51,11 +51,12 @@ const Main = () => {
             setLoading(false);
         }
     }, []);
+
+
     useEffect(() => {
-        const filter = selectedFilters.length === 0 ? '' : selectedFilters.join(',');
+        const filter = selectedFilters === ('Filter' || 'All Experts') ? '' : selectedFilters;
         debouncedFetchExperts(fetchExperts, filter);
     }, [fetchExperts, selectedFilters]);
-
 
 
     const handleFavoriteClick = async (index, expertId) => {
@@ -103,11 +104,7 @@ const Main = () => {
     const handleMenuItemClick = (filter) => {
         setSelectedFilters(prevFilters => {
             if (filter === 'All Experts') {
-                if (prevFilters.includes('All Experts')) {
-                    return [];
-                } else {
-                    return ['All Experts', 'Musicians', 'Producers', 'Engineers', 'Labels', 'MGMT', 'PR'];
-                }
+                return ['All Experts', 'Musicians', 'Producers', 'Engineers', 'Labels', 'MGMT', 'PR'];
             } else {
                 if (prevFilters.includes(filter)) {
                     return prevFilters.filter(item => item !== filter);

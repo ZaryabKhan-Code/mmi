@@ -28,7 +28,7 @@ const Expert = () => {
 
     const [cardData, setCardData] = useState([
         {
-            title: "Quick Hit",
+            title: "Pro Review",
             price: "",
             features: [
                 "Video messaging",

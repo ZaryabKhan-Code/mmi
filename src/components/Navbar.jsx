@@ -13,6 +13,7 @@ import { GetTotalCartItem } from '../services/cart';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchItemCount } from '../store/cartSlice';
 import { fetchNotification } from '../store/sessionNotificationSlice';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 
 const Navbar = () => {
     const itemCount = useSelector((state) => state.cart.itemCount);
@@ -236,7 +237,7 @@ const Navbar = () => {
                                                             />)}
                                                     </MenuItem>
                                                     <MenuItem
-                                                        onClick={() => { setAnchorEl(null); navigate('/inbox'); }}
+                                                        onClick={() => { setAnchorEl(null); navigate('/credits'); }}
                                                         sx={{
                                                             color: "rgba(51, 46, 60, 1)",
                                                             fontSize: "15px",
@@ -248,8 +249,8 @@ const Navbar = () => {
                                                             }
                                                         }}
                                                     >
-                                                        <ChatIcon sx={{ mr: 2 }} fontSize='small' />
-                                                        Inbox
+                                                        <CardGiftcardIcon sx={{ mr: 2 }} fontSize='small' />
+                                                        Credits
                                                     </MenuItem>
                                                     <Divider className='m-0 p-0' />
                                                     <MenuItem
