@@ -120,6 +120,7 @@ const Expert = () => {
                 dispatch(setItemCount(newCount));
             }
         } catch (error) {
+            console.log(error)
             setSnackbarMessage('❌ Error adding item to cart. Please try again.');
             setSnackbarSeverity('error');
             setOpenSnackbar(true);
