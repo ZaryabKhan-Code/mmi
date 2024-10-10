@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Box, Card, CardMedia, Grid, Typography, IconButton, Tooltip, Menu, MenuItem, Divider, Skeleton } from '@mui/material';
+import { Box, Card, CardMedia, Grid, Typography, IconButton, Tooltip, Menu, MenuItem, Divider, Skeleton, ClickAwayListener } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import CheckIcon from '@mui/icons-material/Check';
@@ -51,12 +51,11 @@ const Main = () => {
             setLoading(false);
         }
     }, []);
+
     useEffect(() => {
         const filter = selectedFilters.length === 0 ? '' : selectedFilters.join(',');
         debouncedFetchExperts(fetchExperts, filter);
     }, [fetchExperts, selectedFilters]);
-
-
 
     const handleFavoriteClick = async (index, expertId) => {
         if (favoriteControllerRef.current) {
@@ -94,7 +93,7 @@ const Main = () => {
 
     const handleFilterClick = (event) => {
         if (anchorEl) {
-            setAnchorEl(null);
+
         } else {
             setAnchorEl(event.currentTarget);
         }
@@ -116,7 +115,10 @@ const Main = () => {
                 }
             }
         });
-        setAnchorEl(null);
+    };
+
+    const handleClickAway = () => {
+
     };
 
     const isAllExpertsSelected = () => selectedFilters.includes('All Experts');
@@ -145,35 +147,37 @@ const Main = () => {
         <Grid container className='container mt-4' sx={{ padding: '0px 30px 0px 40px' }}>
             <Card sx={{ boxShadow: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', backgroundColor: 'rgba(255, 252, 249, 1)' }}>
                 <Typography sx={{ fontSize: commonFontSize }} fontWeight={600}>Featured Experts</Typography>
-                <Box
-                    sx={{
-                        border: '2px solid #ccc',
-                        borderRadius: '20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: {
-                            xs: '4px 10px',
-                            md: '6px 12px'
-                        },
-                        cursor: 'pointer',
-                        '&:hover': {
-                            backgroundColor: '#f4f4f4'
-                        }
-                    }}
-                    onClick={handleFilterClick}
-                >
-                    <Typography sx={{
-                        fontWeight: 600, color: 'rgba(51, 46, 60, 1)', fontSize: {
-                            xs: '15px',
-                            md: '17px'
-                        }
-                    }}>Filter</Typography>
-                    {anchorEl ? <ArrowDropUpIcon sx={{ marginLeft: '10px' }} /> : <ArrowDropDownIcon sx={{ marginLeft: '10px' }} />}
-                </Box>
+                <ClickAwayListener onClickAway={handleClickAway}>
+                    <Box
+                        sx={{
+                            border: '2px solid #ccc',
+                            borderRadius: '20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: {
+                                xs: '4px 10px',
+                                md: '6px 12px'
+                            },
+                            cursor: 'pointer',
+                            '&:hover': {
+                                backgroundColor: '#f4f4f4'
+                            }
+                        }}
+                        onClick={handleFilterClick}
+                    >
+                        <Typography sx={{
+                            fontWeight: 600, color: 'rgba(51, 46, 60, 1)', fontSize: {
+                                xs: '15px',
+                                md: '17px'
+                            }
+                        }}>Filter</Typography>
+                        {anchorEl ? <ArrowDropUpIcon sx={{ marginLeft: '10px' }} /> : <ArrowDropDownIcon sx={{ marginLeft: '10px' }} />}
+                    </Box>
+                </ClickAwayListener>
                 <Menu
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
-                    // onClose={handleFilterClick}
+                    onClose={() => setAnchorEl(null)}
                     sx={{ marginTop: '10px' }}
                     anchorOrigin={{
                         vertical: 'bottom',
@@ -204,7 +208,6 @@ const Main = () => {
                             <Divider className="m-0 p-0" />
                         </React.Fragment>
                     ))}
-
                 </Menu>
             </Card>
             <Grid container spacing={3} sx={{ mt: 0 }}>

@@ -15,11 +15,11 @@ const Choice = () => {
             title: "Favorites",
             link: '/favorites'
         },
-        {
-            icon: "/images/credits.svg",
-            title: "Credits",
-            link: '/credits'
-        },
+        // {
+        //     icon: "/images/credits.svg",
+        //     title: "Credits",
+        //     link: '/credits'
+        // },
         // {
         //     icon: "/images/payment.svg",
         //     title: "Payment",
