@@ -173,7 +173,7 @@ const Main = () => {
                 <Menu
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
-                    onClose={handleFilterClick}
+                    // onClose={handleFilterClick}
                     sx={{ marginTop: '10px' }}
                     anchorOrigin={{
                         vertical: 'bottom',
