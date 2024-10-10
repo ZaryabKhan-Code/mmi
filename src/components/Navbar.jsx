@@ -78,7 +78,6 @@ const Navbar = () => {
     const pageConfigs = [
         { path: '/profile', title: 'Profile' },
         { path: '/favorites', title: 'Favorites' },
-        { path: '/credits', title: 'Credits' },
         { path: '/addcards', title: 'Payment' },
         { path: '/changepassword', title: 'Password Change' },
         { path: '/notifications', title: 'Notifications' },
