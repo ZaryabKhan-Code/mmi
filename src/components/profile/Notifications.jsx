@@ -36,7 +36,7 @@ const Notifications = () => {
                                         width: { xs: 60, sm: 70 },
                                         height: { xs: 60, sm: 70 },
                                     }}
-                                    src={notification.files[0]}
+                                    src={notification.profileExpertUrl}
                                 >{notification.name}</Avatar>
                             </Grid>
                             <Grid item xs sx={{ textAlign: 'left', marginTop: '5px' }}>

@@ -125,7 +125,7 @@ const Credits = () => {
                                                     maxHeight: { xs: "250px", sm: "250px", md: "300px" },
                                                     height: { xs: "250px", sm: "250px", md: "300px" }
                                                 }}
-                                                image={expert.expertUser.files[0]}
+                                                image={expert.expertUser.profileExpertUrl}
                                                 alt={expert.expertUser.name}
                                             />
                                         ) : (

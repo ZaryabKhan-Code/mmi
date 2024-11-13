@@ -105,7 +105,7 @@ const SessionsTab = () => {
                                     width: { xs: 70, sm: 70 },
                                     height: { xs: 70, sm: 70 },
                                 }}
-                                src={session.expertUser.files && session.expertUser.files[0] ? session.expertUser.files[0] : null}
+                                src={session.expertUser.files && session.expertUser.profileExpertUrl ? session.expertUser.profileExpertUrl : null}
                             >A</Avatar>
                         </Grid>
                         <Grid item xs sx={{ textAlign: 'left', marginTop: '5px' }}>

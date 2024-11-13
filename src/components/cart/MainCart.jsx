@@ -204,7 +204,7 @@ const MainCart = () => {
                     name: item.name,
                     quantity: item.quantity,
                     amount: item.price * 100,
-                    image: item.files[0] || "/images/demoContainer.jpeg"
+                    image: item.profileExpertUrl || "/images/demoContainer.jpeg"
                 }))
             });
             const result = await stripe.redirectToCheckout({
@@ -436,7 +436,7 @@ const MainCart = () => {
                                             <Grid sx={{ mt: { xs: 1.5 } }}>
                                                 <Box
                                                     component={'img'}
-                                                    src={item.files[0] || "/images/demoContainer.jpeg"}
+                                                    src={item.profileExpertUrl || "/images/demoContainer.jpeg"}
                                                     sx={{
                                                         width: '100%',
                                                         height: 'auto',
