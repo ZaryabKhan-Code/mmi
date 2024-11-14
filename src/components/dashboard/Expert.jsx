@@ -53,7 +53,7 @@ const Expert = () => {
             try {
                 const response = await ExpertSingleProfile(localStorage.getItem("token"), id);
                 setExpert(response.data[0]);
-                console.log(response.data[0])
+                console.log("specific", response.data[0])
                 setCardData(prevCardData => [
                     {
                         ...prevCardData[0],
