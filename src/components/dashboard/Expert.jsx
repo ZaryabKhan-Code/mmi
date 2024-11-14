@@ -236,11 +236,11 @@ const Expert = () => {
                                                     fontFamily: 'Poppins',
                                                     textTransform: "uppercase",
                                                     fontSize: {
-                                                        xs: '1.2rem', // extra small devices
-                                                        sm: '1.5rem', // small devices
-                                                        md: '1.8rem', // medium devices
-                                                        lg: '2rem',   // large devices
-                                                        xl: '2.2rem'  // extra large devices
+                                                        xs: '1.2rem',
+                                                        sm: '1.5rem',
+                                                        md: '1.8rem',
+                                                        lg: '2rem',
+                                                        xl: '2.2rem'
                                                     }
                                                 }}
                                             >

@@ -41,6 +41,7 @@ const MainCart = () => {
             try {
                 const response = await GetCart(localStorage.getItem('token'), userId);
                 setItems(response.data.cartExpertUsers);
+                console.log(response.data.cartExpertUsers)
                 setType(response.data.type);
             } catch (error) {
             } finally {
@@ -204,7 +205,7 @@ const MainCart = () => {
                     name: item.name,
                     quantity: item.quantity,
                     amount: item.price * 100,
-                    image: item.profileExpertUrl || "/images/demoContainer.jpeg"
+                    image: item.profilePicture || "/images/demoContainer.jpeg"
                 }))
             });
             const result = await stripe.redirectToCheckout({
