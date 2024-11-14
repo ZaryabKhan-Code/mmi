@@ -53,6 +53,7 @@ const Expert = () => {
             try {
                 const response = await ExpertSingleProfile(localStorage.getItem("token"), id);
                 setExpert(response.data[0]);
+                console.log(response.data[0])
                 setCardData(prevCardData => [
                     {
                         ...prevCardData[0],
@@ -65,6 +66,7 @@ const Expert = () => {
                 ]);
                 setLoading(false);
             } catch (error) {
+                console.log(error)
                 setLoading(false);
             }
         }
@@ -146,7 +148,7 @@ const Expert = () => {
                         {loading ? (
                             <Skeleton variant="rectangular" width="100%" height={300} sx={{ borderRadius: '10px' }} />
                         ) : (
-                            expert.pictureLinks.length > 0 ? (
+                            expert?.profilePicture ? (
                                 <Card sx={{ boxShadow: "none", position: 'relative', backgroundColor: "rgba(255, 252, 249, 1)" }}>
                                     <CardMedia
                                         component="img"
@@ -156,7 +158,7 @@ const Expert = () => {
                                             maxHeight: { xs: "250px", sm: "250px", md: "300px", lg: "350px", xl: "400px" },
                                             height: { xs: "250px", sm: "250px", md: "300px", lg: "350px", xl: "400px" }
                                         }}
-                                        image={expert.pictureLinks[0]}
+                                        image={expert.profilePicture}
                                         alt={expert.name}
                                     />
                                 </Card>

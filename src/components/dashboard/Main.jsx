@@ -42,6 +42,7 @@ const Main = () => {
             setLoading(true);
             const response = await ExpertProfile(localStorage.getItem('token'), filter, { signal: abortControllerRef.current.signal });
             setExperts(response.data);
+            console.log(response.data)
             setFavoriteStatus(response.data.map(expert => expert.liked));
         } catch (error) {
             if (error.name !== 'AbortError') {
@@ -225,7 +226,7 @@ const Main = () => {
                         </Grid>
                     ))
                 ) : (
-                    experts.length > 0 ? (
+                    experts?.length > 0 ? (
                         experts.map((expert, index) => (
                             <Grid item xs={12} sm={12} md={6} key={expert.id}>
                                 <motion.div
@@ -242,7 +243,7 @@ const Main = () => {
                                         }}
                                         onClick={() => handleCardClick(expert.id)}
                                     >
-                                        {expert.pictureLinks.length > 0 ? (
+                                        {expert?.profilePicture ? (
                                             <CardMedia
                                                 component='img'
                                                 loading='lazy'
@@ -252,7 +253,7 @@ const Main = () => {
                                                     maxHeight: { xs: '250px', sm: '250px', md: '300px', lg: '350px', xl: '400px' },
                                                     height: { xs: '250px', sm: '250px', md: '300px', lg: '350px', xl: '400px' }
                                                 }}
-                                                image={expert.pictureLinks[0]}
+                                                image={expert.profilePicture}
                                                 alt={expert.name}
                                             />
                                         ) : (
