@@ -22,7 +22,10 @@ const Credits = () => {
         try {
             const response = await GetAllSesssion(localStorage.getItem("token"), userId);
             setExperts(response.data.Credits);
+            console.log('Credits', response.data.Credits)
+
         } catch (error) {
+            console.log('Credits', error)
         } finally {
             setLoading(false);
         }
@@ -115,7 +118,7 @@ const Credits = () => {
                             <Grid item xs={12} key={index} className='mb-4'>
                                 <Link to={getLinkPath(expert)} style={{ textDecoration: 'none' }}>
                                     <Card sx={{ boxShadow: "none", position: 'relative', backgroundColor: "rgba(255, 252, 249, 1)", maxWidth: 460 }}>
-                                        {expert.expertUser.files && expert.expertUser.files.length > 0 ? (
+                                        {expert.expertUser ? (
                                             <CardMedia
                                                 component="img"
                                                 loading='lazy'
