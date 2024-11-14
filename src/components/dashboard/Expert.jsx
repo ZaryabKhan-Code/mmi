@@ -52,16 +52,16 @@ const Expert = () => {
         const fetchSpecific = async () => {
             try {
                 const response = await ExpertSingleProfile(localStorage.getItem("token"), id);
-                setExpert(response.data[0]);
-                console.log("specific", response.data[0])
+                setExpert(response.data);
+                console.log("specific", response.data)
                 setCardData(prevCardData => [
                     {
                         ...prevCardData[0],
-                        price: `$${response.data[0].price1}`
+                        price: `$${response.data.price1}`
                     },
                     {
                         ...prevCardData[1],
-                        price: `$${response.data[0].price2}`
+                        price: `$${response.data.price2}`
                     }
                 ]);
                 setLoading(false);
