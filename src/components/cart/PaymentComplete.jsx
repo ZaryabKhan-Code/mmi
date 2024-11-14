@@ -5,6 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const PaymentComplete = ({ type, orderId, expertName, expertId, creditId }) => {
+    console.log('TYPE', type)
     const commonFontSize = {
         xs: '1.5rem',
         sm: '1.5rem',
