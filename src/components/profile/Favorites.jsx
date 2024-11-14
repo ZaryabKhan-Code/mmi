@@ -153,7 +153,7 @@ const Favorites = () => {
                             <Grid item key={index} className='mb-4'>
                                 <Box sx={{}} className='' justifyContent={'center'} alignItems={'center'}>
                                     <Card sx={{ boxShadow: "none", position: 'relative', backgroundColor: "rgba(255, 252, 249, 1)", maxWidth: 460 }}>
-                                        {expert.pictureLinks.length > 0 ? (
+                                        {expert?.profilePicture ? (
                                             <CardMedia
                                                 component="img"
                                                 loading='lazy'
@@ -163,7 +163,7 @@ const Favorites = () => {
                                                     maxHeight: { xs: "250px", sm: "250px", md: "300px", },
                                                     height: { xs: "250px", sm: "250px", md: "300px", }
                                                 }}
-                                                image={expert.pictureLinks[0]}
+                                                image={expert.profilePicture}
                                                 alt={expert.name}
                                             />
                                         ) : (
