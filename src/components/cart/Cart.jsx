@@ -14,13 +14,15 @@ const Cart = () => {
     const queryParams = queryString.parse(location.search);
     const { orderId, isComplete, type, isSent, expertName, expertID, creditId, expertId, userId } = queryParams;
     const isCartPageWithNoQueryParams = location.pathname === '/cart' && Object.keys(queryParams).length === 0;
+    console.log('TYPE', queryParams)
+
     return (
         <Grid>
             {isCartPageWithNoQueryParams && (
                 <MainCart />
             )}
             {(orderId && isComplete === 'true' && (type === 'Quick Hit' || type === 'Song Critique')) ? (
-                <PaymentComplete type={type === 'Song Critique' ? 'Quick Hit' : undefined} orderId={orderId} expertName={expertName} expertId={expertID || expertId} creditId={creditId} />
+                <PaymentComplete type={type} orderId={orderId} expertName={expertName} expertId={expertID || expertId} creditId={creditId} />
             ) : (orderId && (type === 'Quick Hit' || type === 'Song Critique') && isSent === 'true') ? (
                 <FileSentSongCritique />
             ) : (orderId && type === 'Song Critique') ? (

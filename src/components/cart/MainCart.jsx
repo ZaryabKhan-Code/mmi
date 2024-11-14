@@ -378,7 +378,7 @@ const MainCart = () => {
                                                             fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' }  // Responsive font size
                                                         }}
                                                     >
-                                                        {type}
+                                                        {type === 'Song Critique' ? 'Pro Review' : type}
                                                     </Typography>
                                                     <Typography
                                                         variant="body2"
