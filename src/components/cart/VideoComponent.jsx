@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
 import { Button, Grid, Typography, Box, IconButton, CircularProgress } from '@mui/material';
@@ -21,15 +22,15 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+                video: { width: { ideal: 1920 }, height: { ideal: 1080 }, facingMode: 'user' }, // Set resolution to 1920x1080 (1080p)
                 audio: true,
             });
             webcamRef.current.srcObject = stream;
 
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
-                mimeType: 'video/mp4',
-                bitsPerSecond: 128000,
+                mimeType: 'video/webm;codecs=vp9', // Use a format that supports high-quality video
+                bitsPerSecond: 5000000, // Set a high bitrate (5 Mbps) for better quality
             });
             recorderRef.current.startRecording();
 
