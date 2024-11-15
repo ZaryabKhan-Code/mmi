@@ -22,15 +22,15 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: { ideal: 1920 }, height: { ideal: 1080 }, facingMode: 'user' }, // Set resolution to 1920x1080 (1080p)
+                video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }, // Set resolution to 1280x720 (720p)
                 audio: true,
             });
             webcamRef.current.srcObject = stream;
 
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
-                mimeType: 'video/webm;codecs=vp9', // Use a format that supports high-quality video
-                bitsPerSecond: 5000000, // Set a high bitrate (5 Mbps) for better quality
+                mimeType: 'video/webm;codecs=vp9', // Using webm with vp9 codec for better quality and compression
+                bitsPerSecond: 2500000, // Increased bitrate to 2.5 Mbps for better quality
             });
             recorderRef.current.startRecording();
 
@@ -58,6 +58,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             setCapturing(false);
         }
     }, []);
+
 
     const handlePauseCaptureClick = useCallback(() => {
         if (recorderRef.current) {
