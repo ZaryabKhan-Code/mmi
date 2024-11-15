@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/prop-types */
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
 import { Button, Grid, Typography, Box, IconButton, CircularProgress } from '@mui/material';
@@ -18,50 +16,31 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const [progress, setProgress] = useState(0);
     const timerRef = useRef(null);
 
-    const handleStartCaptureClick = useCallback(() => {
+    const handleStartCaptureClick = useCallback(async () => {
         setCapturing(true);
 
-        const stream = webcamRef.current.stream;
-        recorderRef.current = new RecordRTC(stream, {
-            type: 'video',
-            mimeType: 'video/webm'
-        });
-        recorderRef.current.startRecording();
-
-        // Automatically stop recording after 59 seconds
-        setTimeout(() => {
-            if (recorderRef.current) {
-                handleStopCaptureClick();
-            }
-        }, 59000);
-
-        setProgress(0);
-        timerRef.current = setInterval(() => {
-            setProgress(prev => {
-                if (prev >= 100) {
-                    handleStopCaptureClick();
-                    clearInterval(timerRef.current);
-                    return 100;
-                }
-                return prev + 1.66; // Update progress every second for 60 seconds
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+                audio: true,
             });
-        }, 1000);
-    }, [webcamRef, setCapturing]);
+            webcamRef.current.srcObject = stream;
 
-    const handlePauseCaptureClick = useCallback(() => {
-        if (recorderRef.current) {
-            recorderRef.current.pauseRecording();
-            setPaused(true);
-            clearInterval(timerRef.current); // Pause the countdown timer
-        }
-    }, []);
+            recorderRef.current = new RecordRTC(stream, {
+                type: 'video',
+                mimeType: 'video/mp4', // Change MIME type for better compatibility
+                bitsPerSecond: 128000,
+            });
+            recorderRef.current.startRecording();
 
-    const handleResumeCaptureClick = useCallback(() => {
-        if (recorderRef.current) {
-            recorderRef.current.resumeRecording();
-            setPaused(false);
+            // Automatically stop recording after 59 seconds
+            setTimeout(() => {
+                if (recorderRef.current) {
+                    handleStopCaptureClick();
+                }
+            }, 59000);
 
-            // Resume countdown timer
+            setProgress(0);
             timerRef.current = setInterval(() => {
                 setProgress(prev => {
                     if (prev >= 100) {
@@ -70,6 +49,35 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                         return 100;
                     }
                     return prev + 1.66; // Update progress every second for 60 seconds
+                });
+            }, 1000);
+        } catch (error) {
+            console.error("Error starting video capture:", error);
+            alert("An error occurred while accessing the camera. Please try again.");
+            setCapturing(false);
+        }
+    }, []);
+
+    const handlePauseCaptureClick = useCallback(() => {
+        if (recorderRef.current) {
+            recorderRef.current.pauseRecording();
+            setPaused(true);
+            clearInterval(timerRef.current);
+        }
+    }, []);
+
+    const handleResumeCaptureClick = useCallback(() => {
+        if (recorderRef.current) {
+            recorderRef.current.resumeRecording();
+            setPaused(false);
+            timerRef.current = setInterval(() => {
+                setProgress(prev => {
+                    if (prev >= 100) {
+                        handleStopCaptureClick();
+                        clearInterval(timerRef.current);
+                        return 100;
+                    }
+                    return prev + 1.66;
                 });
             }, 1000);
         }
@@ -82,9 +90,11 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 setRecordedChunks([blob]);
                 const url = URL.createObjectURL(blob);
                 setPreviewUrl(url);
+                recorderRef.current.getInternalRecorder().destroy();
+                recorderRef.current = null;
             });
             setCapturing(false);
-            clearInterval(timerRef.current); // Clear the countdown timer
+            clearInterval(timerRef.current);
         }
     }, []);
 
@@ -98,7 +108,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
     useEffect(() => {
         if (recordedChunks.length) {
-            const blob = recordedChunks[0]; // Get the recorded blob
+            const blob = recordedChunks[0];
             const url = URL.createObjectURL(blob);
             setPreviewUrl(url);
         }
@@ -150,7 +160,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                                     height: { ideal: 720 }
                                 }}
                                 style={{ width: '100%', height: 'auto', borderRadius: '10px' }}
-                                onLoadedData={() => setIsWebcamReady(true)} // Set webcam as ready when loaded
+                                onLoadedData={() => setIsWebcamReady(true)}
                             />
                             {isWebcamReady && (
                                 capturing ? (
@@ -232,7 +242,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                                 className='mt-4'
                                 sx={{
                                     padding: "14px 80px",
-                                    fontSize: 16, // Responsive font size
+                                    fontSize: 16,
                                     textAlign: "center",
                                     borderRadius: "10px",
                                     color: "rgba(152, 142, 169, 1)",
@@ -245,7 +255,6 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                             >
                                 Retake
                             </Button>
-
                         </>
                     )}
                 </Box>
