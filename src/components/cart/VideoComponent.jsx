@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCirclePlay, faCirclePause, faSquare } from '@fortawesome/free-solid-svg-icons';
 import RecordRTC from 'recordrtc';
 
+// eslint-disable-next-line react/prop-types
 const VideoComponent = ({ handleSubmit, loading }) => {
     const webcamRef = useRef(null);
     const recorderRef = useRef(null);
@@ -33,12 +34,11 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             });
             recorderRef.current.startRecording();
 
-            // Automatically stop recording after 59 seconds
             setTimeout(() => {
                 if (recorderRef.current) {
                     handleStopCaptureClick();
                 }
-            }, 59000);
+            }, 600000); // 10 minutes in milliseconds
 
             setProgress(0);
             timerRef.current = setInterval(() => {
