@@ -22,11 +22,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { ideal: 1280 }, // HD resolution for better compatibility
-                    height: { ideal: 720 },
-                    facingMode: 'user',
-                },
+                video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
                 audio: true,
             });
 
@@ -36,7 +32,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
                 mimeType: 'video/mp4', // Attempting MP4 format
-                bitsPerSecond: 2560000, // High bitrate for better quality (5 Mbps)
+                bitsPerSecond: 1280000, // High bitrate for better quality (5 Mbps)
             });
             recorderRef.current.startRecording();
 
