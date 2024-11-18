@@ -20,8 +20,13 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const handleStartCaptureClick = useCallback(async () => {
         setCapturing(true);
         try {
+            // Updated constraints for higher resolution
             const constraints = {
-                video: { width: { min: 640, ideal: 1280, max: 1920 }, height: { min: 480, ideal: 720, max: 1080 }, facingMode: 'user' },
+                video: {
+                    width: { min: 1280, ideal: 1920, max: 3840 }, // Ideal resolution Full HD to 4K
+                    height: { min: 720, ideal: 1080, max: 2160 },
+                    facingMode: 'user'
+                },
                 audio: true,
             };
 
@@ -34,10 +39,11 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
             webcamRef.current.srcObject = stream;
 
+            // Increase the bitrate for higher quality
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
                 mimeType: 'video/webm',
-                bitsPerSecond: 1280000,
+                bitsPerSecond: 5000000, // 5 Mbps for high-quality video
             });
             recorderRef.current.startRecording();
 
@@ -45,7 +51,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 if (recorderRef.current) {
                     handleStopCaptureClick();
                 }
-            }, 600000);
+            }, 600000); // Stop after 10 minutes
 
             setProgress(0);
             timerRef.current = setInterval(() => {
@@ -64,6 +70,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             setCapturing(false);
         }
     }, []);
+
 
     const handlePauseCaptureClick = useCallback(() => {
         if (recorderRef.current) {
