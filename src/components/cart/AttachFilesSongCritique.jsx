@@ -61,6 +61,8 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         const response = await fetch(file);
         fileBlob = await response.blob();
         const filetype = fileBlob.type || 'application/octet-stream';
+        const fileBuffer = await fileBlob.arrayBuffer();
+        console.log('fileBuffer', fileBuffer)
 
         formData.append('userId', userId);
         formData.append('expertUserId', expertId);
@@ -72,8 +74,6 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
             const response = await AddMessage(localStorage.getItem('token'), formData);
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
             const presignedUrl = response.data.presignedUrl;
-            const fileBuffer = await fileBlob.arrayBuffer();
-            console.log('fileBuffer', fileBuffer)
             const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
                 headers: {
                     'Content-Type': filetype,
