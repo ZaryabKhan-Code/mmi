@@ -62,7 +62,7 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
             formData.append('orderType', type);
 
             // Determine file type and extension
-            const fileExtension = messageType === 'audio' ? '.mp3' : '.mp4'; // Assuming .mp3 for audio, .mp4 for video
+            const fileExtension = messageType === 'audio' ? 'audio/mp3' : 'video/mp4'; // Assuming .mp3 for audio, .mp4 for video
             let fileBlob;
             if (messageType === 'audio' || messageType === 'video') {
                 const response = await fetch(data);
@@ -77,7 +77,7 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
             console.log('Response', response.data);
             console.log('FILEBLOB TYPE', fileBlob.type)
             const presignedUrl = response.data.presignedUrl; // Get presigned URL
-            const filetype = 'video/mp4' || 'application/octet-stream'; // Get MIME type of the file
+            const filetype = fileExtension || 'application/octet-stream'; // Get MIME type of the file
 
             // Convert the file into an ArrayBuffer for uploading
             const fileBuffer = await fileBlob.arrayBuffer();
