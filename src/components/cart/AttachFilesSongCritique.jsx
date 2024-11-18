@@ -9,7 +9,7 @@ import { useCookies } from 'react-cookie';
 import { GetCreditStatus } from '../../services/sessions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-
+import axios from 'axios';
 const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
     const imageSize = {
         xs: '1.5rem',
