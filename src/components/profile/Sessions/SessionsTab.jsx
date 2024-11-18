@@ -26,6 +26,7 @@ const SessionsTab = () => {
                 throw new Error("No sessions found.");
             }
             setSessions(response.data.Credits);
+            console.log(response.data)
         } catch (error) {
             if (error.name !== 'AbortError') {
                 setError("No sessions found");
@@ -105,7 +106,7 @@ const SessionsTab = () => {
                                     width: { xs: 70, sm: 70 },
                                     height: { xs: 70, sm: 70 },
                                 }}
-                                src={session.expertUser.files && session.expertUser.profileExpertUrl ? session.expertUser.profileExpertUrl : null}
+                                src={session.expertUser.profilePicture}
                             >A</Avatar>
                         </Grid>
                         <Grid item xs sx={{ textAlign: 'left', marginTop: '5px' }}>

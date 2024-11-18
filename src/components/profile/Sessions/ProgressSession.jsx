@@ -36,7 +36,7 @@ const ProgressSession = ({ id, type }) => {
             try {
                 await PostSessionNotification(localStorage.getItem('token'), data);
             } catch (error) {
-                console.log(error)
+                console.log("PostSessionNotification", error)
             }
         }
         const fetchResponse = async () => {
@@ -51,6 +51,7 @@ const ProgressSession = ({ id, type }) => {
                 }
 
             } catch (error) {
+                console.log('ERROR', error)
             }
         }
         fetchNotification();
