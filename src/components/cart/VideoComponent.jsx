@@ -19,29 +19,33 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
     const handleStartCaptureClick = useCallback(async () => {
         setCapturing(true);
-
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
+            const constraints = {
+                video: { width: { min: 640, ideal: 1280, max: 1920 }, height: { min: 480, ideal: 720, max: 1080 }, facingMode: 'user' },
                 audio: true,
-            });
+            };
 
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Your browser does not support video recording.");
+                setCapturing(false);
+                return;
+            }
+
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
             webcamRef.current.srcObject = stream;
-
 
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
-                mimeType: 'video/mp4', // Attempting MP4 format
-                bitsPerSecond: 1280000, // High bitrate for better quality (5 Mbps)
+                mimeType: 'video/webm;codecs=vp8',
+                bitsPerSecond: 1280000,
             });
             recorderRef.current.startRecording();
 
-            // Automatically stop recording after 10 minutes
             setTimeout(() => {
                 if (recorderRef.current) {
                     handleStopCaptureClick();
                 }
-            }, 600000); // 10 minutes in milliseconds
+            }, 600000);
 
             setProgress(0);
             timerRef.current = setInterval(() => {
@@ -60,7 +64,6 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             setCapturing(false);
         }
     }, []);
-
 
     const handlePauseCaptureClick = useCallback(() => {
         if (recorderRef.current) {
