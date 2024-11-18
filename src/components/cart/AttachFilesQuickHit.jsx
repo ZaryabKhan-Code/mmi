@@ -74,27 +74,27 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
 
             const response = await AddMessage(localStorage.getItem('token'), formData);
             console.log('Response', response.data);
-            console.log('FILEBLOB TYPE', fileBlob.type)
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
+            if (messageType === 'audio' || messageType === 'video') {
+                const presignedUrl = response.data.presignedUrl; // Get presigned URL
+                const filetype = fileExtension || 'application/octet-stream'; // Get MIME type of the file
 
-            const presignedUrl = response.data.presignedUrl; // Get presigned URL
-            const filetype = fileExtension || 'application/octet-stream'; // Get MIME type of the file
-
-            // Convert the file into an ArrayBuffer for uploading
-            const fileBuffer = await fileBlob.arrayBuffer();
-            console.log('fileBuffer', fileBuffer)
-            // Upload the file to S3 using the presigned URL
-            const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
-                headers: {
-                    'Content-Type': filetype, // Set the correct file type
-                },
-                onUploadProgress: (progressEvent) => {
-                    const progress = Math.round(
-                        (progressEvent.loaded * 100) / progressEvent.total
-                    );
-                },
-            });
-            console.log('File uploaded successfully:', uploadResponse.status);
+                // Convert the file into an ArrayBuffer for uploading
+                const fileBuffer = await fileBlob.arrayBuffer();
+                console.log('fileBuffer', fileBuffer)
+                // Upload the file to S3 using the presigned URL
+                const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
+                    headers: {
+                        'Content-Type': filetype, // Set the correct file type
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        const progress = Math.round(
+                            (progressEvent.loaded * 100) / progressEvent.total
+                        );
+                    },
+                });
+                console.log('File uploaded successfully:', uploadResponse.status);
+            }
             // Navigate or perform any other actions upon successful upload
         } catch (error) {
             console.error('Error uploading file:', error);
