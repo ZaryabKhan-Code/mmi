@@ -57,12 +57,14 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         setLoading(true);
         const formData = new FormData();
         formData.append('file', file);
+        const uploadedFile = formData.get('file');
         let fileBlob;
         const response = await fetch(file);
         fileBlob = await response.blob();
-        const filetype = fileBlob.type || 'application/octet-stream';
+        const filetype = uploadedFile.type || 'application/octet-stream';
         const fileBuffer = await fileBlob.arrayBuffer();
         console.log('fileBuffer', fileBuffer)
+        console.log('filetype', uploadedFile.type)
 
         formData.append('userId', userId);
         formData.append('expertUserId', expertId);
