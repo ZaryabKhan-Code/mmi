@@ -61,10 +61,21 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         let fileBlob;
         const response = await fetch(file);
         fileBlob = await response.blob();
-        const filetype = uploadedFile.type || 'application/octet-stream';
-        const fileBuffer = await fileBlob.arrayBuffer();
         console.log('fileBuffer', fileBuffer)
         console.log('filetype', uploadedFile.type)
+        let fileCategory = '';
+        if (mimeType.startsWith('video/')) {
+            fileCategory = 'video';
+        } else if (mimeType.startsWith('audio/')) {
+            fileCategory = 'audio';
+        } else if (mimeType.startsWith('text/')) {
+            fileCategory = 'text';
+        } else {
+            fileCategory = 'unknown';
+        }
+        const filetype = fileCategory || 'application/octet-stream';
+        const fileBuffer = await fileBlob.arrayBuffer();
+
 
         formData.append('userId', userId);
         formData.append('expertUserId', expertId);
