@@ -55,13 +55,42 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
 
     const handleSubmit = async () => {
         setLoading(true);
-
+        const formData = new FormData();
+        formData.append('userId', userId);
+        formData.append('expertUserId', expertId);
+        formData.append('orderNo', orderId);
+        formData.append('message', message);
+        formData.append('messageType', 'all');
+        formData.append('orderType', type);
+        formData.append('file', file);
+        let fileBlob;
+        const response = await fetch(file);
+        fileBlob = await response.blob();
         try {
-            const response = await AddMessage(localStorage.getItem('token'), requestBody);
+            const response = await AddMessage(localStorage.getItem('token'), formData);
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
+            const presignedUrl = response.data.presignedUrl;
+            const filetype = fileBlob.type || 'application/octet-stream';
+            const fileBuffer = await fileBlob.arrayBuffer();
+            console.log('fileBuffer', fileBuffer)
+            const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
+                headers: {
+                    'Content-Type': filetype,
+                },
+                onUploadProgress: (progressEvent) => {
+                    const progress = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                },
+            });
+            console.log('File uploaded successfully:', uploadResponse.status);
         } catch (error) {
+            console.error('Error uploading file:', error);
+            alert('An error occurred while uploading the file. Please try again.');
+
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const [isValidCredit, setIsValidCredit] = useState(true);
