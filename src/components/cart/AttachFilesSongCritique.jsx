@@ -64,6 +64,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         console.log('fileBuffer', fileBuffer)
         console.log('filetype', uploadedFile.type)
         let fileCategory = '';
+        const mimeType = uploadedFile.type;
         if (mimeType.startsWith('video/')) {
             fileCategory = 'video';
         } else if (mimeType.startsWith('audio/')) {
