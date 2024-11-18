@@ -73,16 +73,10 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
 
         // Determine the file type
         const filetype = uploadedFile.type || 'application/octet-stream';
+        const filename = uploadedFile.name || 'unknown_file';
+        const fileExtension = filename.split('.').pop().toLowerCase();
 
-        // Map MIME type to a general category
-        let messageType = 'unknown';
-        if (filetype.startsWith('video/')) {
-            messageType = 'video';
-        } else if (filetype.startsWith('audio/')) {
-            messageType = 'audio';
-        } else if (filetype.startsWith('text/')) {
-            messageType = 'text';
-        }
+
 
         // Append additional form data
         formData.append('userId', userId);
@@ -90,7 +84,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         formData.append('orderNo', orderId);
         formData.append('message', message);
         formData.append('messageType', 'file');
-        formData.append('fileType', messageType)
+        formData.append('fileType', fileExtension)
         formData.append('orderType', type);
 
         try {
