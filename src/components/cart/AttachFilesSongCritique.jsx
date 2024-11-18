@@ -55,18 +55,39 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
 
     const handleSubmit = async () => {
         setLoading(true);
+        const filetype = file.type;
         const formData = new FormData();
         formData.append('userId', userId);
         formData.append('expertUserId', expertId);
         formData.append('orderNo', orderId);
         formData.append('message', message);
-        formData.append('messageType', 'all');
+        formData.append('messageType', filetype);
         formData.append('orderType', type);
         formData.append('file', file);
 
         try {
             const response = await AddMessage(localStorage.getItem('token'), formData);
+            const getUrlResponse = await axios.post(response.data.presignedUrl);
+            const presignedUrl = getUrlResponse.data.presignedUrl;
+            const fileBuffer = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result); // The result is the file buffer (ArrayBuffer)
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file); // Read file as ArrayBuffer
+            });
+            // Upload the file to S3
+            const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
+                headers: {
+                    "Content-Type": filetype,
+                },
+                onUploadProgress: (progressEvent) => {
+                    const progress = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                },
+            });
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
+
         } catch (error) {
         }
         setLoading(false);
