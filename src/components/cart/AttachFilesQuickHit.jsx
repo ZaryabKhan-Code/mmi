@@ -16,6 +16,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useCookies } from 'react-cookie';
 import VideoComponent from './VideoComponent';
+import axios from 'axios';
+
 const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
     const [activeComponent, setActiveComponent] = useState('video');
     const [activeIcon, setActiveIcon] = useState('video');
@@ -50,31 +52,58 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
 
     const handleSubmit = async (messageType, data) => {
         setLoading(true);
-        const formData = new FormData();
-        formData.append('userId', userId);
-        formData.append('expertUserId', expertId);
-        formData.append('orderNo', orderId);
-        formData.append('messageType', messageType);
-        formData.append('orderType', type);
-        const fileExtension = messageType === 'audio' ? '.mp3' : '.mp4'; // Assuming .mp3 for audio, .mp4 for video
-        if (messageType === 'audio') {
-            const response = await fetch(data);
-            const blob = await response.blob();
-            formData.append('file', blob, messageType + fileExtension);
-        } else if (messageType === 'video') {
-            const response = await fetch(data);
-            const blob = await response.blob();
-            formData.append('file', blob, messageType + fileExtension);
-        } else {
-            formData.append('message', data);
-        }
+
         try {
+            const formData = new FormData();
+            formData.append('userId', userId);
+            formData.append('expertUserId', expertId);
+            formData.append('orderNo', orderId);
+            formData.append('messageType', messageType);
+            formData.append('orderType', type);
+
+            // Determine file type and extension
+            const fileExtension = messageType === 'audio' ? '.mp3' : '.mp4'; // Assuming .mp3 for audio, .mp4 for video
+            let fileBlob;
+            if (messageType === 'audio' || messageType === 'video') {
+                const response = await fetch(data);
+                fileBlob = await response.blob();
+                formData.append('file', fileBlob, `${messageType}${fileExtension}`);
+            } else {
+                formData.append('message', data);
+            }
+
+            // Send the form data to your API to get the presigned S3 URL
             const response = await AddMessage(localStorage.getItem('token'), formData);
+            console.log('Response', response.data);
+            console.log('FILEBLOB TYPE', fileBlob.type)
+            const presignedUrl = response.data.presignedUrl; // Get presigned URL
+            const filetype = 'video/mp4' || 'application/octet-stream'; // Get MIME type of the file
+
+            // Convert the file into an ArrayBuffer for uploading
+            const fileBuffer = await fileBlob.arrayBuffer();
+            console.log('fileBuffer', fileBuffer)
+            // Upload the file to S3 using the presigned URL
+            const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
+                headers: {
+                    'Content-Type': filetype, // Set the correct file type
+                },
+                onUploadProgress: (progressEvent) => {
+                    const progress = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                },
+            });
+            console.log('File uploaded successfully:', uploadResponse.status);
+            // Navigate or perform any other actions upon successful upload
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
         } catch (error) {
+            console.error('Error uploading file:', error);
+            alert('An error occurred while uploading the file. Please try again.');
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
+
 
     const [isValidCredit, setIsValidCredit] = useState(true);
 

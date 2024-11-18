@@ -50,7 +50,7 @@ export const GetAllAssistant = (token) => {
 export const AddMessage = (token, data) => {
     return axios.post(`${BASE_URL}/add_message`, data, {
         headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
 

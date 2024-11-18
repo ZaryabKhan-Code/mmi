@@ -55,17 +55,9 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
 
     const handleSubmit = async () => {
         setLoading(true);
-        const formData = new FormData();
-        formData.append('userId', userId);
-        formData.append('expertUserId', expertId);
-        formData.append('orderNo', orderId);
-        formData.append('message', message);
-        formData.append('messageType', 'all');
-        formData.append('orderType', type);
-        formData.append('file', file);
 
         try {
-            const response = await AddMessage(localStorage.getItem('token'), formData);
+            const response = await AddMessage(localStorage.getItem('token'), requestBody);
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
         } catch (error) {
         }
