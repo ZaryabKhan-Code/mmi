@@ -72,10 +72,11 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
                 formData.append('message', data);
             }
 
-            // Send the form data to your API to get the presigned S3 URL
             const response = await AddMessage(localStorage.getItem('token'), formData);
             console.log('Response', response.data);
             console.log('FILEBLOB TYPE', fileBlob.type)
+            navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
+
             const presignedUrl = response.data.presignedUrl; // Get presigned URL
             const filetype = fileExtension || 'application/octet-stream'; // Get MIME type of the file
 
@@ -95,7 +96,6 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
             });
             console.log('File uploaded successfully:', uploadResponse.status);
             // Navigate or perform any other actions upon successful upload
-            navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
         } catch (error) {
             console.error('Error uploading file:', error);
             alert('An error occurred while uploading the file. Please try again.');

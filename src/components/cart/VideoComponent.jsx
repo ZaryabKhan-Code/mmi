@@ -42,7 +42,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             // Increase the bitrate for higher quality
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
-                mimeType: 'video/webm',
+                mimeType: 'video/webm;codecs=vp9',
                 bitsPerSecond: 5000000, // 5 Mbps for high-quality video
             });
             recorderRef.current.startRecording();
