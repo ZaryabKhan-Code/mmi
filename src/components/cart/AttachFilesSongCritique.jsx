@@ -57,36 +57,51 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         setLoading(true);
         const formData = new FormData();
         formData.append('file', file);
+
         const uploadedFile = formData.get('file');
         let fileBlob;
-        const response = await fetch(file);
-        fileBlob = await response.blob();
-        console.log('fileBuffer', fileBuffer)
-        console.log('filetype', uploadedFile.type)
-        let fileCategory = '';
-        const mimeType = uploadedFile.type;
-        if (mimeType.startsWith('video/')) {
-            fileCategory = 'video';
-        } else if (mimeType.startsWith('audio/')) {
-            fileCategory = 'audio';
-        } else if (mimeType.startsWith('text/')) {
-            fileCategory = 'text';
-        } else {
-            fileCategory = 'unknown';
+
+        try {
+            const response = await fetch(file);
+            fileBlob = await response.blob();
+        } catch (error) {
+            console.error('Error fetching file blob:', error);
+            alert('Failed to fetch the file. Please check your file and try again.');
+            setLoading(false);
+            return;
         }
-        const filetype = fileCategory || 'application/octet-stream';
-        const fileBuffer = await fileBlob.arrayBuffer();
 
+        // Determine the file type
+        const filetype = uploadedFile.type || 'application/octet-stream';
 
+        // Map MIME type to a general category
+        let messageType = 'unknown';
+        if (filetype.startsWith('video/')) {
+            messageType = 'video';
+        } else if (filetype.startsWith('audio/')) {
+            messageType = 'audio';
+        } else if (filetype.startsWith('text/')) {
+            messageType = 'text';
+        }
+
+        // Append additional form data
         formData.append('userId', userId);
         formData.append('expertUserId', expertId);
         formData.append('orderNo', orderId);
         formData.append('message', message);
-        formData.append('messageType', filetype);
+        formData.append('messageType', 'file');
+        formData.append('fileType', messageType)
         formData.append('orderType', type);
+
         try {
+            // Get ArrayBuffer for the file
+            const fileBuffer = await fileBlob.arrayBuffer();
+
+            // Send initial form data
             const response = await AddMessage(localStorage.getItem('token'), formData);
             navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
+
+            // Upload file to presigned URL
             const presignedUrl = response.data.presignedUrl;
             const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
                 headers: {
@@ -96,17 +111,19 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
                     const progress = Math.round(
                         (progressEvent.loaded * 100) / progressEvent.total
                     );
+                    console.log(`Upload Progress: ${progress}%`);
                 },
             });
+
             console.log('File uploaded successfully:', uploadResponse.status);
         } catch (error) {
             console.error('Error uploading file:', error);
             alert('An error occurred while uploading the file. Please try again.');
-
         } finally {
             setLoading(false);
         }
     };
+
 
     const [isValidCredit, setIsValidCredit] = useState(true);
 
