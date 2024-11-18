@@ -152,7 +152,7 @@ const Navbar = () => {
 
                                                     <Grid item>
                                                         {/* Wrap Avatar in a Box to allow custom positioning */}
-                                                        <Box sx={{}}>
+                                                        <Box sx={{ position: 'relative' }}>
                                                             <Avatar
                                                                 src={PorfileImage}
                                                                 alt={Name}
@@ -163,12 +163,12 @@ const Navbar = () => {
                                                                 <Box
                                                                     sx={{
                                                                         position: 'absolute',
-                                                                        top: '-5px',     // Customize this to move the badge vertically
-                                                                        right: '-10px',   // Customize this to move the badge horizontally
-                                                                        width: '8px',  // Customize the size of the red dot
-                                                                        height: '8px', // Customize the size of the red dot
+                                                                        top: '-5px', // Adjust to position the badge on the avatar
+                                                                        right: '-10px', // Adjust to align the badge horizontally
+                                                                        width: '8px', // Size of the red dot
+                                                                        height: '8px', // Size of the red dot
                                                                         backgroundColor: '#FF5A59',
-                                                                        borderRadius: '50%',  // Make it circular
+                                                                        borderRadius: '50%', // Make it circular
                                                                     }}
                                                                 />
                                                             )}
@@ -314,7 +314,6 @@ const Navbar = () => {
                                         {/* Bell Icon */}
                                         <img src='/images/bell.svg' alt="Bell" style={{ cursor: "pointer", height: "23px" }} />
 
-                                        {/* Red Dot - only shown if `sessionNotification` is true */}
                                         {sessionNotification && (
                                             <Box
                                                 sx={{
