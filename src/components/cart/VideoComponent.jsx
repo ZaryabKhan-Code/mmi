@@ -36,7 +36,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
-                mimeType: 'video/webm;codecs=vp8',
+                mimeType: 'video/webm',
                 bitsPerSecond: 1280000,
             });
             recorderRef.current.startRecording();
