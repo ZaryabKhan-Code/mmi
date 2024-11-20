@@ -25,6 +25,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             streamRef.current = null;
         }
     }, []);
+
     const handleStopCaptureClick = useCallback(() => {
         if (recorderRef.current) {
             recorderRef.current.stopRecording(() => {
@@ -43,7 +44,12 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const handleStartCaptureClick = useCallback(async () => {
         try {
             const constraints = {
-                video: true,
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    aspectRatio: 16 / 9,
+                    facingMode: 'user', // Use 'environment' for the back camera on mobile
+                },
                 audio: true,
             };
 
@@ -101,7 +107,6 @@ const VideoComponent = ({ handleSubmit, loading }) => {
         }
     }, [handleStopCaptureClick]);
 
-
     const handleRetake = useCallback(() => {
         setRecordedChunks([]);
         setPreviewUrl(null);
@@ -116,7 +121,6 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             stopCamera(); // Stop the camera when the component unmounts
         };
     }, [stopCamera]);
-
 
     return (
         <>
