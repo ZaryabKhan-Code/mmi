@@ -18,68 +18,63 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const [progress, setProgress] = useState(0);
     const timerRef = useRef(null);
 
-    // Function to stop all media tracks and turn off the camera
-    const stopCamera = () => {
+    // Function to stop camera access
+    const stopCamera = useCallback(() => {
         if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop()); // Stops all media tracks
-            streamRef.current = null; // Clear the reference
+            streamRef.current.getTracks().forEach((track) => track.stop());
+            streamRef.current = null;
         }
-    };
+    }, []);
+    const handleStopCaptureClick = useCallback(() => {
+        if (recorderRef.current) {
+            recorderRef.current.stopRecording(() => {
+                const blob = recorderRef.current.getBlob();
+                setRecordedChunks([blob]);
+                const url = URL.createObjectURL(blob);
+                setPreviewUrl(url);
+                recorderRef.current = null;
+            });
+            setCapturing(false);
+            clearInterval(timerRef.current);
+            stopCamera();
+        }
+    }, [stopCamera]);
 
     const handleStartCaptureClick = useCallback(async () => {
-        setCapturing(true);
         try {
-            // Updated constraints for higher resolution
             const constraints = {
-                video: {
-                    width: { min: 1280, ideal: 1920, max: 3840 }, // Ideal resolution Full HD to 4K
-                    height: { min: 720, ideal: 1080, max: 2160 },
-                    facingMode: 'user'
-                },
+                video: true,
                 audio: true,
             };
 
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert("Your browser does not support video recording.");
-                setCapturing(false);
-                return;
-            }
-
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
             webcamRef.current.srcObject = stream;
+            streamRef.current = stream;
 
-            // Increase the bitrate for higher quality
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
                 mimeType: 'video/webm',
-                bitsPerSecond: 5000000, // 5 Mbps for high-quality video
             });
             recorderRef.current.startRecording();
 
-            setTimeout(() => {
-                if (recorderRef.current) {
-                    handleStopCaptureClick();
-                }
-            }, 600000); // Stop after 10 minutes
-
+            setCapturing(true);
             setProgress(0);
+
             timerRef.current = setInterval(() => {
-                setProgress(prev => {
+                setProgress((prev) => {
                     if (prev >= 100) {
-                        handleStopCaptureClick();
                         clearInterval(timerRef.current);
+                        handleStopCaptureClick();
                         return 100;
                     }
                     return prev + 0.166; // Update progress every second for 10 minutes
                 });
             }, 1000);
         } catch (error) {
-            console.error("Error starting video capture:", error);
-            alert("An error occurred while accessing the camera. Please try again.");
-            setCapturing(false);
+            console.error('Error accessing camera:', error);
+            alert('An error occurred while accessing the camera. Please check your permissions and try again.');
         }
-    }, []);
-
+    }, [handleStopCaptureClick]);
 
     const handlePauseCaptureClick = useCallback(() => {
         if (recorderRef.current) {
@@ -89,50 +84,38 @@ const VideoComponent = ({ handleSubmit, loading }) => {
         }
     }, []);
 
-
     const handleResumeCaptureClick = useCallback(() => {
         if (recorderRef.current) {
             recorderRef.current.resumeRecording();
             setPaused(false);
             timerRef.current = setInterval(() => {
-                setProgress(prev => {
+                setProgress((prev) => {
                     if (prev >= 100) {
-                        handleStopCaptureClick();
                         clearInterval(timerRef.current);
+                        handleStopCaptureClick();
                         return 100;
                     }
-                    return prev + 0.166; // Update progress every second for 10 minutes
+                    return prev + 0.166;
                 });
             }, 1000);
         }
-    }, []);
+    }, [handleStopCaptureClick]);
 
-    const handleStopCaptureClick = useCallback(() => {
-        if (recorderRef.current) {
-            recorderRef.current.stopRecording(() => {
-                const blob = recorderRef.current.getBlob();
-                setRecordedChunks([blob]);
-                const url = URL.createObjectURL(blob);
-                setPreviewUrl(url);
-                recorderRef.current.getInternalRecorder().destroy();
-                recorderRef.current = null;
 
-            });
-            setCapturing(false);
-            clearInterval(timerRef.current);
-            stopCamera(); // Stop camera access here
-        }
-
-    }, []);
-
-    const handleRetake = () => {
+    const handleRetake = useCallback(() => {
         setRecordedChunks([]);
         setPreviewUrl(null);
-        setProgress(0);
         setCapturing(false);
         setPaused(false);
-        stopCamera(); // Stop the camera here as well
-    };
+        setProgress(0);
+        stopCamera();
+    }, [stopCamera]);
+
+    useEffect(() => {
+        return () => {
+            stopCamera(); // Stop the camera when the component unmounts
+        };
+    }, [stopCamera]);
 
     useEffect(() => {
         if (recordedChunks.length) {
