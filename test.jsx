@@ -1,310 +1,281 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Box, Card, CardMedia, Grid, Typography, IconButton, Tooltip, Menu, MenuItem, Divider, Skeleton } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import CheckIcon from '@mui/icons-material/Check';
-import { motion } from 'framer-motion';
-import { ExpertProfile, ExpertLike } from '../../services/user';
-import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import CustomSnackbar from '../../CustomSnackbar';
-import { debounce } from 'lodash';
+on andriod device which dont have 4k or full hd its stop recording make it for record for that as well for example if a device have 720p higher resolution record on that if the device have 4k record on that and when ever video stop stop the camera access as well and when its resum or start take the access fix that issues and show me
+/* eslint-disable react/prop-types */
+import React, { useCallback, useState, useEffect, useRef } from 'react';
+import Webcam from 'react-webcam';
+import { Button, Grid, Typography, Box, IconButton, CircularProgress } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner, faCirclePlay, faCirclePause, faSquare } from '@fortawesome/free-solid-svg-icons';
+import RecordRTC from 'recordrtc';
 
-const debouncedFetchExperts = debounce((fetchExperts, filter) => {
-    fetchExperts(filter);
-}, 300);
+const VideoComponent = ({ handleSubmit, loading }) => {
+    const webcamRef = useRef(null);
+    const recorderRef = useRef(null);
+    const [capturing, setCapturing] = useState(false);
+    const [paused, setPaused] = useState(false);
+    const [recordedChunks, setRecordedChunks] = useState([]);
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [isWebcamReady, setIsWebcamReady] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const timerRef = useRef(null);
 
-const Main = () => {
-    const [experts, setExperts] = useState([]);
-    const [favoriteStatus, setFavoriteStatus] = useState([]);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [selectedFilters, setSelectedFilters] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
-    const [cookies] = useCookies(['user']);
-    const userData = cookies.user;
-    const userId = userData ? userData.id : null;
-
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-
-    const abortControllerRef = useRef(null);
-    const favoriteControllerRef = useRef(null);
-
-    const fetchExperts = useCallback(async (filter) => {
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-        }
-        abortControllerRef.current = new AbortController();
-
+    const handleStartCaptureClick = useCallback(async () => {
+        setCapturing(true);
         try {
-            setLoading(true);
-            const response = await ExpertProfile(localStorage.getItem('token'), filter, { signal: abortControllerRef.current.signal });
-            setExperts(response.data);
-            setFavoriteStatus(response.data.map(expert => expert.liked));
-        } catch (error) {
-            if (error.name !== 'AbortError') {
-                console.error('Error fetching experts:', error);
+            // Updated constraints for higher resolution
+            const constraints = {
+                video: {
+                    width: { min: 1280, ideal: 1920, max: 3840 }, // Ideal resolution Full HD to 4K
+                    height: { min: 720, ideal: 1080, max: 2160 },
+                    facingMode: 'user'
+                },
+                audio: true,
+            };
+
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Your browser does not support video recording.");
+                setCapturing(false);
+                return;
             }
-        } finally {
-            setLoading(false);
+
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            webcamRef.current.srcObject = stream;
+
+            // Increase the bitrate for higher quality
+            recorderRef.current = new RecordRTC(stream, {
+                type: 'video',
+                mimeType: 'video/webm',
+                bitsPerSecond: 5000000, // 5 Mbps for high-quality video
+            });
+            recorderRef.current.startRecording();
+
+            setTimeout(() => {
+                if (recorderRef.current) {
+                    handleStopCaptureClick();
+                }
+            }, 600000); // Stop after 10 minutes
+
+            setProgress(0);
+            timerRef.current = setInterval(() => {
+                setProgress(prev => {
+                    if (prev >= 100) {
+                        handleStopCaptureClick();
+                        clearInterval(timerRef.current);
+                        return 100;
+                    }
+                    return prev + 0.166; // Update progress every second for 10 minutes
+                });
+            }, 1000);
+        } catch (error) {
+            console.error("Error starting video capture:", error);
+            alert("An error occurred while accessing the camera. Please try again.");
+            setCapturing(false);
         }
     }, []);
 
 
-    useEffect(() => {
-        const filter = selectedFilters === ('Filter' || 'All Experts') ? '' : selectedFilters;
-        debouncedFetchExperts(fetchExperts, filter);
-    }, [fetchExperts, selectedFilters]);
-
-
-    const handleFavoriteClick = async (index, expertId) => {
-        if (favoriteControllerRef.current) {
-            favoriteControllerRef.current.abort();
+    const handlePauseCaptureClick = useCallback(() => {
+        if (recorderRef.current) {
+            recorderRef.current.pauseRecording();
+            setPaused(true);
+            clearInterval(timerRef.current);
         }
-        favoriteControllerRef.current = new AbortController();
+    }, []);
 
-        try {
-            setFavoriteStatus(prevStatus => {
-                const newStatus = [...prevStatus];
-                newStatus[index] = !newStatus[index];
-                return newStatus;
+    const handleResumeCaptureClick = useCallback(() => {
+        if (recorderRef.current) {
+            recorderRef.current.resumeRecording();
+            setPaused(false);
+            timerRef.current = setInterval(() => {
+                setProgress(prev => {
+                    if (prev >= 100) {
+                        handleStopCaptureClick();
+                        clearInterval(timerRef.current);
+                        return 100;
+                    }
+                    return prev + 0.166; // Update progress every second for 10 minutes
+                });
+            }, 1000);
+        }
+    }, []);
+
+    const handleStopCaptureClick = useCallback(() => {
+        if (recorderRef.current) {
+            recorderRef.current.stopRecording(() => {
+                const blob = recorderRef.current.getBlob();
+                setRecordedChunks([blob]);
+                const url = URL.createObjectURL(blob);
+                setPreviewUrl(url);
+                recorderRef.current.getInternalRecorder().destroy();
+                recorderRef.current = null;
             });
-
-            const data = { userId, expertId };
-            const response = await ExpertLike(localStorage.getItem('token'), data, { signal: favoriteControllerRef.current.signal });
-            if (response.status === 200) {
-                setOpenSnackbar(true);
-                setSnackbarSeverity('success');
-                setSnackbarMessage('⭐ Favorite updated!');
-            } else {
-                setOpenSnackbar(true);
-                setSnackbarSeverity('error');
-                setSnackbarMessage('❌ Update failed!');
-            }
-        } catch (error) {
-            if (error.name !== 'AbortError') {
-                console.error('Error updating favorite:', error);
-                setOpenSnackbar(true);
-                setSnackbarSeverity('error');
-                setSnackbarMessage('⚠️ Error occurred!');
-            }
+            setCapturing(false);
+            clearInterval(timerRef.current);
         }
+    }, []);
+
+    const handleRetake = () => {
+        setRecordedChunks([]);
+        setPreviewUrl(null);
+        setProgress(0);
+        setCapturing(false);
+        setPaused(false);
     };
 
-    const handleFilterClick = (event) => {
-        if (anchorEl) {
-            setAnchorEl(null);
-        } else {
-            setAnchorEl(event.currentTarget);
+    useEffect(() => {
+        if (recordedChunks.length) {
+            const blob = recordedChunks[0];
+            const url = URL.createObjectURL(blob);
+            setPreviewUrl(url);
         }
-    };
-
-    const handleMenuItemClick = (filter) => {
-        setSelectedFilters(prevFilters => {
-            if (filter === 'All Experts') {
-                return ['All Experts', 'Musicians', 'Producers', 'Engineers', 'Labels', 'MGMT', 'PR'];
-            } else {
-                if (prevFilters.includes(filter)) {
-                    return prevFilters.filter(item => item !== filter);
-                } else {
-                    return prevFilters.filter(item => item !== 'All Experts').concat(filter);
-                }
-            }
-        });
-        setAnchorEl(null);
-    };
-
-    const isAllExpertsSelected = () => selectedFilters.includes('All Experts');
-
-    const handleCardClick = (id) => {
-        navigate(`/expert/${id}`);
-    };
-
-    const commonFontSize = {
-        xs: '1rem',
-        sm: '1.6rem',
-        md: '1.6rem',
-        lg: '2rem',
-        xl: '2rem'
-    };
-
-    const smallFontSize = {
-        xs: '14px',
-        sm: '14px',
-        md: '16px',
-        lg: '17px',
-        xl: '17px'
-    };
+    }, [recordedChunks]);
 
     return (
-        <Grid container className='container mt-4' sx={{ padding: '0px 30px 0px 40px' }}>
-            <Card sx={{ boxShadow: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', backgroundColor: 'rgba(255, 252, 249, 1)' }}>
-                <Typography sx={{ fontSize: commonFontSize }} fontWeight={600}>Featured Experts</Typography>
+        <>
+            <Grid container sx={{ display: "flex", justifyContent: "center", padding: "", flexDirection: "column" }}>
+                <Typography
+                    sx={{
+                        fontWeight: 500,
+                        color: "rgba(41, 45, 50, 1)",
+                        fontFamily: "Manrope",
+                        fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2rem' }
+                    }}
+                >
+                    Record a Video
+                </Typography>
+                <Typography
+                    sx={{
+                        fontWeight: 500,
+                        color: "rgba(152, 142, 169, 1)",
+                        fontFamily: "Manrope",
+                        fontSize: { xs: '0.8rem', sm: '0.875rem', md: '1rem' }
+                    }}
+                >
+                    Click the button below to start recording
+                </Typography>
                 <Box
                     sx={{
-                        border: '2px solid #ccc',
-                        borderRadius: '20px',
+                        borderRadius: '10px',
+                        marginTop: '20px',
                         display: 'flex',
-                        alignItems: 'center',
-                        padding: {
-                            xs: '4px 10px',
-                            md: '6px 12px'
-                        },
+                        justifyContent: 'center',
+                        alignItems: "center",
+                        flexDirection: 'column',
+                        textAlign: 'center',
                         cursor: 'pointer',
-                        '&:hover': {
-                            backgroundColor: '#f4f4f4'
-                        }
-                    }}
-                    onClick={handleFilterClick}
-                >
-                    <Typography sx={{
-                        fontWeight: 600, color: 'rgba(51, 46, 60, 1)', fontSize: {
-                            xs: '15px',
-                            md: '17px'
-                        }
-                    }}>Filter</Typography>
-                    {anchorEl ? <ArrowDropUpIcon sx={{ marginLeft: '10px' }} /> : <ArrowDropDownIcon sx={{ marginLeft: '10px' }} />}
-                </Box>
-                <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleFilterClick}
-                    sx={{ marginTop: '10px' }}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    MenuListProps={{
-                        style: { padding: 0 }
                     }}
                 >
-                    <MenuItem onClick={() => handleMenuItemClick('All Experts')} sx={{
-                        color: 'rgba(51, 46, 60, 1)', fontSize: '15px', fontWeight: 600, backgroundColor: isAllExpertsSelected() ? '#f4f4f4' : 'transparent',
-                    }}>
-                        {isAllExpertsSelected() ? <CheckIcon sx={{ marginRight: '15px' }} /> : null}
-                        All Experts
-                    </MenuItem>
-                    {['Musicians', 'Producers', 'Engineers', 'Labels', 'MGMT', 'PR'].map((filter) => (
-                        <React.Fragment key={filter}>
-                            <MenuItem onClick={() => handleMenuItemClick(filter)} sx={{
-                                color: "rgba(51, 46, 60, 1)", fontSize: "15px", fontWeight: 600, backgroundColor: selectedFilters.includes(filter) ? '#f4f4f4' : 'transparent',
-                            }}>
-                                {selectedFilters.includes(filter) ? <CheckIcon sx={{ marginRight: "15px" }} /> : null}
-                                {filter}
-                            </MenuItem>
-                            <Divider className="m-0 p-0" />
-                        </React.Fragment>
-                    ))}
-
-                </Menu>
-            </Card>
-            <Grid container spacing={3} sx={{ mt: 0 }}>
-                {loading ? (
-                    Array.from(new Array(4)).map((_, index) => (
-                        <Grid item xs={12} sm={12} md={6} key={index}>
-                            <Card sx={{ boxShadow: 'none', backgroundColor: 'rgba(255, 252, 249, 1)' }}>
-                                <Skeleton variant='rectangular' sx={{ borderRadius: '10px', height: { xs: '250px', sm: '250px', md: '300px', lg: '350px', xl: '400px' } }} />
-                                <Box sx={{ padding: '10px' }}>
-                                    <Skeleton variant='text' width='60%' />
-                                    <Skeleton variant='text' width='40%' />
-                                    <Skeleton variant='text' width='80%' />
-                                </Box>
-                            </Card>
-                        </Grid>
-                    ))
-                ) : (
-                    experts.length > 0 ? (
-                        experts.map((expert, index) => (
-                            <Grid item xs={12} sm={12} md={6} key={expert.id}>
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                >
-                                    <Card
-                                        sx={{
-                                            boxShadow: 'none',
-                                            position: 'relative',
-                                            backgroundColor: 'rgba(255, 252, 249, 1)',
-                                            cursor: 'pointer'
-                                        }}
-                                        onClick={() => handleCardClick(expert.id)}
-                                    >
-                                        {expert.pictureLinks.length > 0 ? (
-                                            <CardMedia
-                                                component='img'
-                                                loading='lazy'
+                    {!previewUrl ? (
+                        <>
+                            <Webcam
+                                audio={true}
+                                ref={webcamRef}
+                                muted={true}
+                                videoConstraints={{
+                                    width: { ideal: 1280 },
+                                    height: { ideal: 720 }
+                                }}
+                                style={{ width: '100%', height: 'auto', borderRadius: '10px' }}
+                                onLoadedData={() => setIsWebcamReady(true)}
+                            />
+                            {isWebcamReady && (
+                                capturing ? (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+                                        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                                            <CircularProgress
+                                                variant="determinate"
+                                                value={progress}
+                                                size={60}
+                                                thickness={2}
                                                 sx={{
-                                                    objectFit: 'cover',
-                                                    borderRadius: '10px',
-                                                    maxHeight: { xs: '250px', sm: '250px', md: '300px', lg: '350px', xl: '400px' },
-                                                    height: { xs: '250px', sm: '250px', md: '300px', lg: '350px', xl: '400px' }
+                                                    color: "#43B929",
                                                 }}
-                                                image={expert.pictureLinks[0]}
-                                                alt={expert.name}
                                             />
-                                        ) : (
-                                            <Box sx={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                borderRadius: '10px',
-                                                maxHeight: { xs: '250px', sm: '250px', md: '300px', lg: '350px', xl: '400px' },
-                                                height: { xs: '250px', sm: '250px', md: '300px', lg: '350px', xl: '400px' },
-                                                backgroundColor: '#f0f0f0'
-                                            }}>
-                                                <Typography>No Image</Typography>
-                                            </Box>
-                                        )}
-                                        <Tooltip title='Favorite' placement='top' sx={{ fontWeight: '500' }}>
-                                            <IconButton
-                                                sx={{
-                                                    position: 'absolute',
-                                                    top: '10px',
-                                                    right: '10px',
-                                                    color: 'rgba(255, 255, 255, 0.7)',
-                                                }}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleFavoriteClick(index, expert.id);
-                                                }}
-                                            >
-                                                {favoriteStatus[index] ? <img src='/images/selectfav.svg' height={20} alt='Selected Favorite' /> : <img src='/images/favheart.svg' height={20} alt='Unselected Favorite' />}
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Box sx={{ marginBottom: '30px', marginLeft: '0px', marginTop: '5px' }}>
-                                            <Typography variant='h5' fontSize={commonFontSize} component='div' fontWeight={700} sx={{ color: 'rgba(51, 46, 60, 1)', fontFamily: 'Poppins' }}>{expert.name}</Typography>
-                                            <Typography variant='body1' fontWeight={400} fontSize={smallFontSize} sx={{ color: 'rgba(76, 69, 89, 1)', fontFamily: 'Poppins' }}>{expert.title}</Typography>
-                                            <Typography variant='body1' fontWeight={400} fontSize={smallFontSize} sx={{ color: 'rgba(76, 69, 89, 1)', fontFamily: 'Poppins' }}>{expert.tags.split(',').join(', ')}</Typography>
+                                            {!paused ? (
+                                                <IconButton
+                                                    onClick={handlePauseCaptureClick}
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: '50%',
+                                                        left: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon={faCirclePause} size="2x" color="#FF5A59" />
+                                                </IconButton>
+                                            ) : (
+                                                <IconButton
+                                                    onClick={handleResumeCaptureClick}
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: '50%',
+                                                        left: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon={faCirclePlay} size="2x" color="#FF5A59" />
+                                                </IconButton>
+                                            )}
                                         </Box>
-                                    </Card>
-                                </motion.div>
-                            </Grid>
-                        ))
+                                        {capturing && (
+                                            <IconButton
+                                                onClick={handleStopCaptureClick}
+                                                sx={{ ml: 2, color: "#FF5A59" }}
+                                            >
+                                                <FontAwesomeIcon icon={faSquare} size="2x" />
+                                            </IconButton>
+                                        )}
+                                    </Box>
+                                ) : (
+                                    <IconButton
+                                        onClick={handleStartCaptureClick}
+                                        sx={{ mt: 2 }}
+                                    >
+                                        <FontAwesomeIcon icon={faCirclePlay} size="3x" color="#FF5A59" />
+                                    </IconButton>
+                                )
+                            )}
+                        </>
                     ) : (
-                        <Grid item xs={12} sx={{ height: '50vh' }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column' }}>
-                                <Box component={'img'} src='/images/usernotfound.png' width={50} />
-                                <Typography variant='h5' fontSize={commonFontSize} fontWeight={500} sx={{ color: 'rgba(51, 46, 60, 1)', fontFamily: 'Poppins' }}>No expert results found</Typography>
-                            </Box>
-                        </Grid>
-                    )
-                )}
+                        <>
+                            <video src={previewUrl} controls style={{ width: '100%', height: 'auto', borderRadius: '10px' }} />
+                            <Button disabled={loading}
+                                onClick={() => handleSubmit('video', previewUrl)} sx={{
+                                    color: "#fff",
+                                    padding: "14px 89px",
+                                    fontSize: 16,
+                                    borderRadius: "10px",
+                                    backgroundColor: "#FF5A59",
+                                    mt: 2,
+                                    textTransform: "capitalize",
+                                    '&:hover': {
+                                        backgroundColor: "#E04948",
+                                    }
+                                }}>
+                                {loading ? <><FontAwesomeIcon icon={faSpinner} size="xl" spin color='#fff' /></> : 'Send'}
+                            </Button>
+                            <Button onClick={handleRetake}
+                                className='mt-4'
+                                sx={{
+                                    padding: "14px 80px",
+                                    fontSize: 16,
+                                    textAlign: "center",
+                                    borderRadius: "10px",
+                                    color: "rgba(152, 142, 169, 1)",
+                                    border: '2px solid rgba(152, 142, 169, 1)',
+                                    textTransform: "capitalize",
+                                    '&:hover': {
+                                        backgroundColor: "none",
+                                    }
+                                }}
+                            >
+                                Retake
+                            </Button>
+                        </>
+                    )}
+                </Box>
             </Grid>
-            <CustomSnackbar
-                open={openSnackbar}
-                message={snackbarMessage}
-                severity={snackbarSeverity}
-                onClose={() => setOpenSnackbar(false)}
-            />
-        </Grid>
+        </>
     );
 };
 
-export default Main;
+export default VideoComponent;
