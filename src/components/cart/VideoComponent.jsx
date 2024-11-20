@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import Webcam from 'react-webcam';
 import { Button, Grid, Typography, Box, IconButton, CircularProgress } from '@mui/material';
