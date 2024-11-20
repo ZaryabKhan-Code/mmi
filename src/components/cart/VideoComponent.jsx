@@ -115,12 +115,13 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 const url = URL.createObjectURL(blob);
                 setPreviewUrl(url);
                 recorderRef.current.getInternalRecorder().destroy();
+                recorderRef.current = null;
+
             });
-            recorderRef.current = null;
+            setCapturing(false);
+            clearInterval(timerRef.current);
+            stopCamera(); // Stop camera access here
         }
-        setCapturing(false);
-        clearInterval(timerRef.current);
-        stopCamera(); // Stop camera access here
 
     }, []);
 
