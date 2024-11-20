@@ -117,14 +117,6 @@ const VideoComponent = ({ handleSubmit, loading }) => {
         };
     }, [stopCamera]);
 
-    useEffect(() => {
-        if (recordedChunks.length) {
-            const blob = recordedChunks[0];
-            const url = URL.createObjectURL(blob);
-            setPreviewUrl(url);
-        }
-    }, [recordedChunks]);
-
 
     return (
         <>
