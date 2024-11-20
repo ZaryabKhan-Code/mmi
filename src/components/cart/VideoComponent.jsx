@@ -29,59 +29,82 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const handleStartCaptureClick = useCallback(async () => {
         setCapturing(true);
         try {
+            // Updated constraints for higher resolution
             const constraints = {
                 video: {
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 },
-                    facingMode: 'user',
+                    width: { min: 1280, ideal: 1920, max: 3840 }, // Ideal resolution Full HD to 4K
+                    height: { min: 720, ideal: 1080, max: 2160 },
+                    facingMode: 'user'
                 },
                 audio: true,
             };
 
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Your browser does not support video recording.");
+                setCapturing(false);
+                return;
+            }
+
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
-            streamRef.current = stream;
             webcamRef.current.srcObject = stream;
 
+            // Increase the bitrate for higher quality
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
                 mimeType: 'video/webm',
-                bitsPerSecond: 2500000,
+                bitsPerSecond: 5000000, // 5 Mbps for high-quality video
             });
             recorderRef.current.startRecording();
 
             setTimeout(() => {
-                handleStopCaptureClick();
-            }, 600000);
+                if (recorderRef.current) {
+                    handleStopCaptureClick();
+                }
+            }, 600000); // Stop after 10 minutes
 
             setProgress(0);
             timerRef.current = setInterval(() => {
-                setProgress(prev => Math.min(prev + 0.166, 100));
+                setProgress(prev => {
+                    if (prev >= 100) {
+                        handleStopCaptureClick();
+                        clearInterval(timerRef.current);
+                        return 100;
+                    }
+                    return prev + 0.166; // Update progress every second for 10 minutes
+                });
             }, 1000);
         } catch (error) {
-            console.error("Error accessing camera:", error);
-            alert("Unable to access camera. Please check your device permissions.");
+            console.error("Error starting video capture:", error);
+            alert("An error occurred while accessing the camera. Please try again.");
             setCapturing(false);
         }
     }, []);
+
 
     const handlePauseCaptureClick = useCallback(() => {
         if (recorderRef.current) {
             recorderRef.current.pauseRecording();
             setPaused(true);
-            clearInterval(timerRef.current); // Stop the progress update
+            clearInterval(timerRef.current);
         }
-        stopCamera(); // Ensure camera is stopped when recording ends
     }, []);
+
 
     const handleResumeCaptureClick = useCallback(() => {
         if (recorderRef.current) {
             recorderRef.current.resumeRecording();
             setPaused(false);
             timerRef.current = setInterval(() => {
-                setProgress(prev => Math.min(prev + 0.166, 100)); // Resume progress update
+                setProgress(prev => {
+                    if (prev >= 100) {
+                        handleStopCaptureClick();
+                        clearInterval(timerRef.current);
+                        return 100;
+                    }
+                    return prev + 0.166; // Update progress every second for 10 minutes
+                });
             }, 1000);
         }
-
     }, []);
 
     const handleStopCaptureClick = useCallback(() => {
@@ -92,13 +115,13 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 const url = URL.createObjectURL(blob);
                 setPreviewUrl(url);
                 recorderRef.current.getInternalRecorder().destroy();
-                recorderRef.current = null;
             });
+            recorderRef.current = null;
         }
-
         setCapturing(false);
         clearInterval(timerRef.current);
-        stopCamera(); // Ensure camera is stopped when recording ends
+        stopCamera(); // Stop camera access here
+
     }, []);
 
     const handleRetake = () => {
@@ -107,14 +130,16 @@ const VideoComponent = ({ handleSubmit, loading }) => {
         setProgress(0);
         setCapturing(false);
         setPaused(false);
-        stopCamera(); // Stop the camera when retaking
+        stopCamera(); // Stop the camera here as well
     };
 
     useEffect(() => {
-        return () => {
-            stopCamera(); // Clean up on unmount
-        };
-    }, []);
+        if (recordedChunks.length) {
+            const blob = recordedChunks[0];
+            const url = URL.createObjectURL(blob);
+            setPreviewUrl(url);
+        }
+    }, [recordedChunks]);
 
 
     return (
