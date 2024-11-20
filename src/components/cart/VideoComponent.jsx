@@ -9,7 +9,6 @@ import RecordRTC from 'recordrtc';
 const VideoComponent = ({ handleSubmit, loading }) => {
     const webcamRef = useRef(null);
     const recorderRef = useRef(null);
-    const streamRef = useRef(null);
     const [capturing, setCapturing] = useState(false);
     const [paused, setPaused] = useState(false);
     const [recordedChunks, setRecordedChunks] = useState([]);
@@ -18,69 +17,60 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const [progress, setProgress] = useState(0);
     const timerRef = useRef(null);
 
-    // Function to stop camera access
-    const stopCamera = useCallback(() => {
-        if (streamRef.current) {
-            streamRef.current.getTracks().forEach((track) => track.stop());
-            streamRef.current = null;
-        }
-    }, []);
-
-    const handleStopCaptureClick = useCallback(() => {
-        if (recorderRef.current) {
-            recorderRef.current.stopRecording(() => {
-                const blob = recorderRef.current.getBlob();
-                setRecordedChunks([blob]);
-                const url = URL.createObjectURL(blob);
-                setPreviewUrl(url);
-                recorderRef.current = null;
-            });
-            setCapturing(false);
-            clearInterval(timerRef.current);
-            stopCamera();
-        }
-    }, [stopCamera]);
-
     const handleStartCaptureClick = useCallback(async () => {
+        setCapturing(true);
         try {
+            // Updated constraints for higher resolution
             const constraints = {
                 video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                    aspectRatio: 16 / 9,
-                    facingMode: 'user', // Use 'environment' for the back camera on mobile
+                    width: { min: 1280, ideal: 1920, max: 3840 }, // Ideal resolution Full HD to 4K
+                    height: { min: 720, ideal: 1080, max: 2160 },
+                    facingMode: 'user'
                 },
                 audio: true,
             };
 
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert("Your browser does not support video recording.");
+                setCapturing(false);
+                return;
+            }
+
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
             webcamRef.current.srcObject = stream;
-            streamRef.current = stream;
 
+            // Increase the bitrate for higher quality
             recorderRef.current = new RecordRTC(stream, {
                 type: 'video',
                 mimeType: 'video/webm',
+                bitsPerSecond: 5000000, // 5 Mbps for high-quality video
             });
             recorderRef.current.startRecording();
 
-            setCapturing(true);
-            setProgress(0);
+            setTimeout(() => {
+                if (recorderRef.current) {
+                    handleStopCaptureClick();
+                }
+            }, 600000); // Stop after 10 minutes
 
+            setProgress(0);
             timerRef.current = setInterval(() => {
-                setProgress((prev) => {
+                setProgress(prev => {
                     if (prev >= 100) {
-                        clearInterval(timerRef.current);
                         handleStopCaptureClick();
+                        clearInterval(timerRef.current);
                         return 100;
                     }
                     return prev + 0.166; // Update progress every second for 10 minutes
                 });
             }, 1000);
         } catch (error) {
-            console.error('Error accessing camera:', error);
-            alert('An error occurred while accessing the camera. Please check your permissions and try again.');
+            console.error("Error starting video capture:", error);
+            alert("An error occurred while accessing the camera. Please try again.");
+            setCapturing(false);
         }
-    }, [handleStopCaptureClick]);
+    }, []);
+
 
     const handlePauseCaptureClick = useCallback(() => {
         if (recorderRef.current) {
@@ -95,32 +85,48 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             recorderRef.current.resumeRecording();
             setPaused(false);
             timerRef.current = setInterval(() => {
-                setProgress((prev) => {
+                setProgress(prev => {
                     if (prev >= 100) {
-                        clearInterval(timerRef.current);
                         handleStopCaptureClick();
+                        clearInterval(timerRef.current);
                         return 100;
                     }
-                    return prev + 0.166;
+                    return prev + 0.166; // Update progress every second for 10 minutes
                 });
             }, 1000);
         }
-    }, [handleStopCaptureClick]);
+    }, []);
 
-    const handleRetake = useCallback(() => {
+    const handleStopCaptureClick = useCallback(() => {
+        if (recorderRef.current) {
+            recorderRef.current.stopRecording(() => {
+                const blob = recorderRef.current.getBlob();
+                setRecordedChunks([blob]);
+                const url = URL.createObjectURL(blob);
+                setPreviewUrl(url);
+                recorderRef.current.getInternalRecorder().destroy();
+                recorderRef.current = null;
+            });
+            setCapturing(false);
+            clearInterval(timerRef.current);
+        }
+    }, []);
+
+    const handleRetake = () => {
         setRecordedChunks([]);
         setPreviewUrl(null);
+        setProgress(0);
         setCapturing(false);
         setPaused(false);
-        setProgress(0);
-        stopCamera();
-    }, [stopCamera]);
+    };
 
     useEffect(() => {
-        return () => {
-            stopCamera(); // Stop the camera when the component unmounts
-        };
-    }, [stopCamera]);
+        if (recordedChunks.length) {
+            const blob = recordedChunks[0];
+            const url = URL.createObjectURL(blob);
+            setPreviewUrl(url);
+        }
+    }, [recordedChunks]);
 
     return (
         <>
