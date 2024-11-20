@@ -78,7 +78,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
                 recorderRef.current = new RecordRTC(fallbackStream, {
                     type: 'video',
-                    mimeType: 'video/webm',
+                    mimeType: 'video/mp4',
                     bitsPerSecond: 1000000, // Lower bitrate for lower resolution
                 });
                 recorderRef.current.startRecording();
