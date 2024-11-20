@@ -28,17 +28,27 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 
     const handleStartCaptureClick = useCallback(async () => {
         setCapturing(true);
-        try {
-            const constraints = {
-                video: {
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 },
-                    facingMode: 'user',
-                },
-                audio: true,
-            };
+        const highResConstraints = {
+            video: {
+                width: { ideal: 1920 },
+                height: { ideal: 1080 },
+                facingMode: 'user',
+            },
+            audio: true,
+        };
 
-            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        const lowResConstraints = {
+            video: {
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                facingMode: 'user',
+            },
+            audio: true,
+        };
+
+        try {
+            // Try high-resolution constraints
+            const stream = await navigator.mediaDevices.getUserMedia(highResConstraints);
             streamRef.current = stream;
             webcamRef.current.srcObject = stream;
 
@@ -58,11 +68,37 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 setProgress(prev => Math.min(prev + 0.166, 100));
             }, 1000);
         } catch (error) {
-            console.error("Error accessing camera:", error);
-            alert("Unable to access camera. Please check your device permissions.");
-            setCapturing(false);
+            console.error("High-resolution capture failed, trying lower resolution:", error);
+
+            try {
+                // Fallback to low-resolution constraints
+                const fallbackStream = await navigator.mediaDevices.getUserMedia(lowResConstraints);
+                streamRef.current = fallbackStream;
+                webcamRef.current.srcObject = fallbackStream;
+
+                recorderRef.current = new RecordRTC(fallbackStream, {
+                    type: 'video',
+                    mimeType: 'video/webm',
+                    bitsPerSecond: 1000000, // Lower bitrate for lower resolution
+                });
+                recorderRef.current.startRecording();
+
+                setTimeout(() => {
+                    handleStopCaptureClick();
+                }, 600000);
+
+                setProgress(0);
+                timerRef.current = setInterval(() => {
+                    setProgress(prev => Math.min(prev + 0.166, 100));
+                }, 1000);
+            } catch (fallbackError) {
+                console.error("Fallback to low-resolution capture failed:", fallbackError);
+                alert("Unable to access camera at any resolution. Please check your device settings or permissions.");
+                setCapturing(false);
+            }
         }
     }, []);
+
 
 
     const handlePauseCaptureClick = useCallback(() => {
