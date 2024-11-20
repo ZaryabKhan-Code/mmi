@@ -5,6 +5,13 @@ import { Button, Grid, Typography, Box, IconButton, CircularProgress } from '@mu
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCirclePlay, faCirclePause, faSquare } from '@fortawesome/free-solid-svg-icons';
 import RecordRTC from 'recordrtc';
+function stopCamera(stream) {
+    if (stream && stream.getTracks) {
+        stream.getTracks().forEach((track) => {
+            track.stop(); // Stops the camera
+        });
+    }
+}
 
 const VideoComponent = ({ handleSubmit, loading }) => {
     const webcamRef = useRef(null);
@@ -16,6 +23,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const [isWebcamReady, setIsWebcamReady] = useState(false);
     const [progress, setProgress] = useState(0);
     const timerRef = useRef(null);
+    const [streaming, setStreaimg] = useState(null);
 
     const handleStartCaptureClick = useCallback(async () => {
         setCapturing(true);
@@ -37,6 +45,7 @@ const VideoComponent = ({ handleSubmit, loading }) => {
             }
 
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            setStreaimg(stream);
             webcamRef.current.srcObject = stream;
 
             // Increase the bitrate for higher quality
@@ -104,13 +113,22 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 setRecordedChunks([blob]);
                 const url = URL.createObjectURL(blob);
                 setPreviewUrl(url);
-                recorderRef.current.getInternalRecorder().destroy();
+
+                // Properly clean up the media stream
+                if (streaming) {
+                    streaming.getTracks().forEach((track) => track.stop());
+                    setStreaimg(null); // Clean up the state
+                }
+
                 recorderRef.current = null;
             });
-            setCapturing(false);
-            clearInterval(timerRef.current);
         }
-    }, []);
+
+        setCapturing(false);
+        clearInterval(timerRef.current);
+    }, [streaming]);
+
+
 
     const handleRetake = () => {
         setRecordedChunks([]);
