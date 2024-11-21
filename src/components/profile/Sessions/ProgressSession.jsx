@@ -43,6 +43,7 @@ const ProgressSession = ({ id, type }) => {
             try {
                 const response = await GetAllBookedSesssion(localStorage.getItem('token'), id);
                 if (type === 'completed') {
+                    console.log("SessionData:", response.data.session[1])
                     setData(response.data.session[1]);
                     setAudio(response.data.session[1]?.chatMediaMessage);
                 } else {

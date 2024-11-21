@@ -32,7 +32,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
 
     const { getRootProps, getInputProps } = useDropzone({
         multiple: false,
-        accept: { 'audio/mpeg': [], 'audio/wav': [], 'audio/aiff': [], 'video/mp4': [] },
+        accept: { 'audio/mpeg': [], 'audio/wav': [], 'audio/aiff': [], 'video/mp4': [], 'video/mov': [] },
         maxSize: 52428800,
         onDrop: (acceptedFiles, fileRejections) => {
             if (fileRejections.length > 0) {
