@@ -29,14 +29,19 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
     const [charCount, setCharCount] = useState(0);
     const [errorFiles, setErrorFiles] = useState('');
     const maxChars = 200;
-
     const { getRootProps, getInputProps } = useDropzone({
         multiple: false,
-        accept: { 'audio/mpeg': [], 'audio/wav': [], 'audio/aiff': [], 'video/mp4': [], 'video/mov': [] },
-        maxSize: 52428800,
+        accept: {
+            'audio/mpeg': [],
+            'audio/wav': [],
+            'audio/aiff': [],
+            'video/mp4': [],
+            'video/quicktime': [] // Adding support for .mov files
+        },
+        maxSize: 52428800, // 50 MB limit
         onDrop: (acceptedFiles, fileRejections) => {
             if (fileRejections.length > 0) {
-                setErrorFiles('Please upload files in MP3, WAV, AIFF, or MP4 format, each not exceeding 50MB.');
+                setErrorFiles('Please upload files in MP3, WAV, AIFF, MP4, or MOV format, each not exceeding 50MB.');
             } else {
                 setFile(acceptedFiles[0]);
                 setErrorFiles('');
@@ -44,6 +49,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         },
         disabled: loading
     });
+
 
     const handleInputChange = (event) => {
         const value = event.target.value;
