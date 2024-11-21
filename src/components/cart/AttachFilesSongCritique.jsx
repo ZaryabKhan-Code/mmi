@@ -87,25 +87,23 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
             // Get ArrayBuffer for the file
             const fileBuffer = await file.arrayBuffer();
             console.log("fileBUffer", fileBuffer)
-            // Send initial form data
-            // const response = await AddMessage(localStorage.getItem('token'), formData);
-            // navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
+            const response = await AddMessage(localStorage.getItem('token'), formData);
+            navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
 
-            // Upload file to presigned URL
-            // const presignedUrl = response.data.presignedUrl;
-            // const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
-            //     headers: {
-            //         'Content-Type': filetype,
-            //     },
-            //     onUploadProgress: (progressEvent) => {
-            //         const progress = Math.round(
-            //             (progressEvent.loaded * 100) / progressEvent.total
-            //         );
-            //         console.log(`Upload Progress: ${progress}%`);
-            //     },
-            // });
+            const presignedUrl = response.data.presignedUrl;
+            const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
+                headers: {
+                    'Content-Type': filetype,
+                },
+                onUploadProgress: (progressEvent) => {
+                    const progress = Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total
+                    );
+                    console.log(`Upload Progress: ${progress}%`);
+                },
+            });
 
-            // console.log('File uploaded successfully:', uploadResponse.status);
+            console.log('File uploaded successfully:', uploadResponse.status);
         } catch (error) {
             console.error('Error uploading file:', error);
             alert('An error occurred while uploading the file. Please try again.');
