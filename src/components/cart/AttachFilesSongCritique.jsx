@@ -65,26 +65,16 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         formData.append('file', file);
 
         const uploadedFile = formData.get('file');
-        let fileBlob;
-
-        try {
-            const response = await fetch(file);
-            fileBlob = await response.blob();
-        } catch (error) {
-            console.error('Error fetching file blob:', error);
-            alert('Failed to fetch the file. Please check your file and try again.');
-            setLoading(false);
-            return;
-        }
+        const response = await fetch(file);
 
         // Determine the file type
         const filetype = uploadedFile.type || 'application/octet-stream';
         const filename = uploadedFile.name || 'unknown_file';
         const fileExtension = filename.split('.').pop().toLowerCase();
 
+        console.log('TYPE FILE:', uploadedFile.type)
+        console.log('fileExtension:', fileExtension)
 
-
-        // Append additional form data
         formData.append('userId', userId);
         formData.append('expertUserId', expertId);
         formData.append('orderNo', orderId);
@@ -95,27 +85,27 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
 
         try {
             // Get ArrayBuffer for the file
-            const fileBuffer = await fileBlob.arrayBuffer();
-
+            const fileBuffer = await file.arrayBuffer();
+            console.log("fileBUffer", fileBuffer)
             // Send initial form data
-            const response = await AddMessage(localStorage.getItem('token'), formData);
-            navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
+            // const response = await AddMessage(localStorage.getItem('token'), formData);
+            // navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
 
             // Upload file to presigned URL
-            const presignedUrl = response.data.presignedUrl;
-            const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
-                headers: {
-                    'Content-Type': filetype,
-                },
-                onUploadProgress: (progressEvent) => {
-                    const progress = Math.round(
-                        (progressEvent.loaded * 100) / progressEvent.total
-                    );
-                    console.log(`Upload Progress: ${progress}%`);
-                },
-            });
+            // const presignedUrl = response.data.presignedUrl;
+            // const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
+            //     headers: {
+            //         'Content-Type': filetype,
+            //     },
+            //     onUploadProgress: (progressEvent) => {
+            //         const progress = Math.round(
+            //             (progressEvent.loaded * 100) / progressEvent.total
+            //         );
+            //         console.log(`Upload Progress: ${progress}%`);
+            //     },
+            // });
 
-            console.log('File uploaded successfully:', uploadResponse.status);
+            // console.log('File uploaded successfully:', uploadResponse.status);
         } catch (error) {
             console.error('Error uploading file:', error);
             alert('An error occurred while uploading the file. Please try again.');
