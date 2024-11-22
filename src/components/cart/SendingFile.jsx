@@ -14,11 +14,9 @@ import {
     DialogTitle,
 } from '@mui/material';
 
-const SendingFile = ({ progessLoader }) => {
+const SendingFile = ({ details, progessLoader }) => {
     const [openDialog, setOpenDialog] = useState(false);
     const navigate = useNavigate();
-    const [fileName] = useState("example-file.mp4"); // Example file name
-    const [fileSize] = useState(24.5); // Example file size in MB
 
     const handleLinkClick = (event) => {
         event.preventDefault();
@@ -89,7 +87,6 @@ const SendingFile = ({ progessLoader }) => {
                         src="/images/filesending.svg"
                         alt="File Sending"
                         sx={{
-                            mt: 1,
                             width: '25px', // Adjust width for breakpoints
                             height: 'auto', // Maintain aspect ratio
                             display: 'block',
@@ -99,12 +96,12 @@ const SendingFile = ({ progessLoader }) => {
                     <Box style={{
                         display: 'flex', flexDirection: 'column', width: '100%'
                     }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.2, mb: 0.8 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Typography variant="body1" sx={{ fontWeight: '500', color: '#333', fontSize: { xs: '0.85rem', sm: '1rem' } }}>
-                                {fileName}
+                                {details.messageType}
                             </Typography>
-                            <Typography variant="body2" sx={{ color: '#666', mt: 0.2, fontSize: { xs: '0.75rem', sm: '0.875rem' }, }}>
-                                {fileSize} MB
+                            <Typography variant="body2" sx={{ color: '#666', fontSize: { xs: '0.75rem', sm: '0.875rem' }, }}>
+                                {details.fileSizeMB} MB
                             </Typography>
                         </Box>
                         <Box sx={{ width: '100%' }}>

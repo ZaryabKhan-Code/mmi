@@ -24,7 +24,6 @@ const VideoComponent = ({ handleSubmit, loading }) => {
     const [progress, setProgress] = useState(0);
     const timerRef = useRef(null);
     const [streaming, setStreaimg] = useState(null);
-
     const handleStartCaptureClick = useCallback(async () => {
         setCapturing(true);
         try {
@@ -53,6 +52,10 @@ const VideoComponent = ({ handleSubmit, loading }) => {
                 type: 'video',
                 mimeType: 'video/webm',
                 bitsPerSecond: 5000000, // 5 Mbps for high-quality video
+                ondataavailable: (blob) => {
+                    // Push each chunk to recordedChunks
+                    setRecordedChunks((prevChunks) => [...prevChunks, blob]);
+                },
             });
             recorderRef.current.startRecording();
 
@@ -296,3 +299,4 @@ const VideoComponent = ({ handleSubmit, loading }) => {
 };
 
 export default VideoComponent;
+

@@ -29,7 +29,7 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
     const userId = userData ? userData.id : null;
     const navigate = useNavigate();
     const [progessLoader, setProgressLoader] = useState(0)
-
+    const [details, setDetails] = useState({})
     const imageSize = {
         xs: '1.5rem',
         sm: '2rem',
@@ -72,6 +72,8 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
                 const response = await fetch(data);
                 fileBlob = await response.blob();
                 formData.append('file', fileBlob, `${messageType}${fileExtension}`);
+                const fileSizeMB = (fileBlob.size / (1024 * 1024)).toFixed(2); // Convert to MB and round to 2 decimal places
+                setDetails({ messageType, fileSizeMB });
             } else {
                 formData.append('message', data);
             }
@@ -85,7 +87,6 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
                 // Convert the file into an ArrayBuffer for uploading
                 const fileBuffer = await fileBlob.arrayBuffer();
                 console.log('fileBuffer', fileBuffer)
-                // Upload the file to S3 using the presigned URL
                 const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
                     headers: {
                         'Content-Type': filetype, // Set the correct file type
@@ -136,7 +137,7 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
 
     return (
         <>{progessLoader > 0 ?
-            <SendingFile progessLoader={progessLoader} /> :
+            <SendingFile details={details} progessLoader={progessLoader} /> :
             <>
                 <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: "0px 40px 0px 40px" }}>
                     <Grid item sx={{ mt: 1, mb: 2 }}>

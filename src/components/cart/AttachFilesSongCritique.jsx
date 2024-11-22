@@ -32,6 +32,8 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
     const [errorFiles, setErrorFiles] = useState('');
     const maxChars = 200;
     const [progessLoader, setProgressLoader] = useState(0)
+    const [details, setDetails] = useState({})
+
     const { getRootProps, getInputProps } = useDropzone({
         multiple: false,
         accept: {
@@ -68,13 +70,11 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         formData.append('file', file);
 
         const uploadedFile = formData.get('file');
-        const response = await fetch(file);
-
         // Determine the file type
         const filetype = uploadedFile.type || 'application/octet-stream';
         const filename = uploadedFile.name || 'unknown_file';
         const fileExtension = filename.split('.').pop().toLowerCase();
-
+        const fileSizeMB = (uploadedFile.size / (1024 * 1024)).toFixed(2);
         console.log('TYPE FILE:', uploadedFile.type)
         console.log('fileExtension:', fileExtension)
 
@@ -85,7 +85,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
         formData.append('messageType', 'file');
         formData.append('fileType', fileExtension)
         formData.append('orderType', type);
-
+        setDetails({ filename, fileSizeMB });
         try {
             // Get ArrayBuffer for the file
             const fileBuffer = await file.arrayBuffer();
@@ -141,7 +141,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
 
     return (
         <>{progessLoader > 0 ?
-            <SendingFile progessLoader={progessLoader} /> :
+            <SendingFile details={details} progessLoader={progessLoader} /> :
             <>
                 <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: "0px 60px 0px 40px" }}>
                     <Grid item sx={{ mt: 1 }}>
