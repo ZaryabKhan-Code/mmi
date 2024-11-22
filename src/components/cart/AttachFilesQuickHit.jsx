@@ -17,6 +17,8 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { useCookies } from 'react-cookie';
 import VideoComponent from './VideoComponent';
 import axios from 'axios';
+import SendingFile from './SendingFile';
+
 
 const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
     const [activeComponent, setActiveComponent] = useState('video');
@@ -26,6 +28,8 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
     const userData = cookies.user;
     const userId = userData ? userData.id : null;
     const navigate = useNavigate();
+    const [progessLoader, setProgressLoader] = useState(0)
+
     const imageSize = {
         xs: '1.5rem',
         sm: '2rem',
@@ -74,7 +78,6 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
 
             const response = await AddMessage(localStorage.getItem('token'), formData);
             console.log('Response', response.data);
-            navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
             if (messageType === 'audio' || messageType === 'video') {
                 const presignedUrl = response.data.presignedUrl; // Get presigned URL
                 const filetype = fileExtension || 'application/octet-stream'; // Get MIME type of the file
@@ -91,9 +94,11 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
                         const progress = Math.round(
                             (progressEvent.loaded * 100) / progressEvent.total
                         );
+                        setProgressLoader(progress)
                     },
                 });
-                console.log('File uploaded successfully:', uploadResponse.status);
+                setProgressLoader(0);
+                navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
             }
             // Navigate or perform any other actions upon successful upload
         } catch (error) {
@@ -130,73 +135,77 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
     if (!isValidCredit) return null;
 
     return (
-        <>
-            <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: "0px 40px 0px 40px" }}>
-                <Grid item sx={{ mt: 1, mb: 2 }}>
-                    <Link to={'/expert'}>
-                        <img
-                            src='/images/backArrow.svg'
-                            alt="Back"
-                            style={{
-                                cursor: "pointer",
-                                width: imageSize.xs,
-                                height: imageSize.xs,
-                            }}
-                        />
-                    </Link>
+        <>{progessLoader > 0 ?
+            <SendingFile progessLoader={progessLoader} /> :
+            <>
+                <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: "0px 40px 0px 40px" }}>
+                    <Grid item sx={{ mt: 1, mb: 2 }}>
+                        <Link to={'/expert'}>
+                            <img
+                                src='/images/backArrow.svg'
+                                alt="Back"
+                                style={{
+                                    cursor: "pointer",
+                                    width: imageSize.xs,
+                                    height: imageSize.xs,
+                                }}
+                            />
+                        </Link>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid className='container mt-2' sx={{ padding: "0px 50px 0px 50px" }}>
-                {activeComponent === 'video' && <VideoComponent handleSubmit={handleSubmit} loading={loading} />}
-                {activeComponent === 'audio' && <AudioComponent handleSubmit={handleSubmit} loading={loading} />}
-                {activeComponent === 'message' && <TextMessage handleSubmit={handleSubmit} loading={loading} />}
-            </Grid>
-            <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "flex-end", padding: "0px 40px 0px 40px" }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, position: 'fixed', top: '50%', transform: 'translateY(50%)' }}>
-                    <Tooltip title="Record Video" placement="left">
-                        <IconButton
-                            onClick={handleVideoRecord}
-                            sx={{
-                                backgroundColor: activeIcon === 'video' ? '#E04948' : '#FF5A59',
-                                color: 'white',
-                                '&:hover': {
-                                    backgroundColor: activeIcon === 'video' ? '#D0393B' : '#e04e4d',
-                                },
-                            }}
-                        >
-                            <VideoCameraFrontIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Record Audio" placement="left">
-                        <IconButton
-                            onClick={handleAudioRecord}
-                            sx={{
-                                backgroundColor: activeIcon === 'audio' ? '#E04948' : '#FF5A59',
-                                color: 'white',
-                                '&:hover': {
-                                    backgroundColor: activeIcon === 'audio' ? '#D0393B' : '#e04e4d',
-                                },
-                            }}
-                        >
-                            <MicIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Write Message" placement="left">
-                        <IconButton
-                            onClick={handleMessageWrite}
-                            sx={{
-                                backgroundColor: activeIcon === 'message' ? '#E04948' : '#FF5A59',
-                                color: 'white',
-                                '&:hover': {
-                                    backgroundColor: activeIcon === 'message' ? '#D0393B' : '#e04e4d',
-                                },
-                            }}
-                        >
-                            <MessageIcon />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-            </Grid>
+                <Grid className='container mt-2' sx={{ padding: "0px 50px 0px 50px" }}>
+                    {activeComponent === 'video' && <VideoComponent handleSubmit={handleSubmit} loading={loading} />}
+                    {activeComponent === 'audio' && <AudioComponent handleSubmit={handleSubmit} loading={loading} />}
+                    {activeComponent === 'message' && <TextMessage handleSubmit={handleSubmit} loading={loading} />}
+                </Grid>
+                <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "flex-end", padding: "0px 40px 0px 40px" }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, position: 'fixed', top: '50%', transform: 'translateY(50%)' }}>
+                        <Tooltip title="Record Video" placement="left">
+                            <IconButton
+                                onClick={handleVideoRecord}
+                                sx={{
+                                    backgroundColor: activeIcon === 'video' ? '#E04948' : '#FF5A59',
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: activeIcon === 'video' ? '#D0393B' : '#e04e4d',
+                                    },
+                                }}
+                            >
+                                <VideoCameraFrontIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Record Audio" placement="left">
+                            <IconButton
+                                onClick={handleAudioRecord}
+                                sx={{
+                                    backgroundColor: activeIcon === 'audio' ? '#E04948' : '#FF5A59',
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: activeIcon === 'audio' ? '#D0393B' : '#e04e4d',
+                                    },
+                                }}
+                            >
+                                <MicIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Write Message" placement="left">
+                            <IconButton
+                                onClick={handleMessageWrite}
+                                sx={{
+                                    backgroundColor: activeIcon === 'message' ? '#E04948' : '#FF5A59',
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: activeIcon === 'message' ? '#D0393B' : '#e04e4d',
+                                    },
+                                }}
+                            >
+                                <MessageIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                </Grid>
+            </>
+        }
         </>
     );
 };

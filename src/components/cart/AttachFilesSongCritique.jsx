@@ -10,6 +10,8 @@ import { GetCreditStatus } from '../../services/sessions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import SendingFile from './SendingFile';
+
 const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
     const imageSize = {
         xs: '1.5rem',
@@ -29,6 +31,7 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
     const [charCount, setCharCount] = useState(0);
     const [errorFiles, setErrorFiles] = useState('');
     const maxChars = 200;
+    const [progessLoader, setProgressLoader] = useState(0)
     const { getRootProps, getInputProps } = useDropzone({
         multiple: false,
         accept: {
@@ -88,7 +91,6 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
             const fileBuffer = await file.arrayBuffer();
             console.log("fileBUffer", fileBuffer)
             const response = await AddMessage(localStorage.getItem('token'), formData);
-            navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
 
             const presignedUrl = response.data.presignedUrl;
             const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
@@ -99,11 +101,11 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
                     const progress = Math.round(
                         (progressEvent.loaded * 100) / progressEvent.total
                     );
-                    console.log(`Upload Progress: ${progress}%`);
+                    setProgressLoader(progress)
                 },
             });
-
-            console.log('File uploaded successfully:', uploadResponse.status);
+            setProgressLoader(0);
+            navigate(`/cart?isSent=true&orderId=${orderId}&type=${type}&expertName=${response.data.name}`);
         } catch (error) {
             console.error('Error uploading file:', error);
             alert('An error occurred while uploading the file. Please try again.');
@@ -138,107 +140,88 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
     if (!isValidCredit) return null;
 
     return (
-        <>
-            <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: "0px 60px 0px 40px" }}>
-                <Grid item sx={{ mt: 1 }}>
-                    <Link to={'/expert'}>
-                        <img
-                            src='/images/backArrow.svg'
-                            alt="Back"
-                            style={{
-                                cursor: "pointer",
-                                width: imageSize.xs,
-                                height: imageSize.xs,
-                            }}
-                        />
-                    </Link>
+        <>{progessLoader > 0 ?
+            <SendingFile progessLoader={progessLoader} /> :
+            <>
+                <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "space-between", padding: "0px 60px 0px 40px" }}>
+                    <Grid item sx={{ mt: 1 }}>
+                        <Link to={'/expert'}>
+                            <img
+                                src='/images/backArrow.svg'
+                                alt="Back"
+                                style={{
+                                    cursor: "pointer",
+                                    width: imageSize.xs,
+                                    height: imageSize.xs,
+                                }}
+                            />
+                        </Link>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "center", padding: "0px 50px 0px 50px", flexDirection: "column" }}>
-                <Typography
-                    sx={{
-                        fontWeight: 500,
-                        color: "rgba(41, 45, 50, 1)",
-                        fontFamily: "Manrope",
-                        fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2rem' }
-                    }}
-                >
-                    Upload files
-                </Typography>
-                <Typography
-                    sx={{
-                        fontWeight: 500,
-                        color: "rgba(152, 142, 169, 1)",
-                        fontFamily: "Manrope",
-                        fontSize: { xs: '0.8rem', sm: '0.875rem', md: '1rem' }
-                    }}
-                >
-                    Select and upload the files of your choice
-                </Typography>
-                <Box
-                    {...getRootProps()}
-                    sx={{
-                        border: '2px dashed rgba(41, 45, 50, 0.5)',
-                        borderRadius: '10px',
-                        paddingTop: "50px",
-                        paddingBottom: "50px",
-                        marginTop: '20px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: "center",
-                        flexDirection: 'column',
-                        textAlign: 'center',
-                        cursor: 'pointer',
-                    }}
-                >
-                    <input {...getInputProps()} />
-                    <Box
-                        sx={{
-                            width: '40px',
-                            height: '40px',
-                            borderRadius: '50%',
-                            border: '2px solid rgba(203, 208, 220, 1)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            marginBottom: '5px'
-                        }}
-                    >
-                        <Box component={'img'} width={20} src="/images/uploadFile.svg" />
-                    </Box>
+                <Grid className='container mt-4' sx={{ display: "flex", justifyContent: "center", padding: "0px 50px 0px 50px", flexDirection: "column" }}>
                     <Typography
-                        gutterBottom
                         sx={{
                             fontWeight: 500,
                             color: "rgba(41, 45, 50, 1)",
                             fontFamily: "Manrope",
-                            fontSize: { xs: '0.725rem', sm: '0.875rem', md: '1rem' }
+                            fontSize: { xs: '1.2rem', sm: '1.5rem', md: '2rem' }
                         }}
                     >
-                        Choose a file or drag & drop it here
+                        Upload files
                     </Typography>
-                    {!file ? (
+                    <Typography
+                        sx={{
+                            fontWeight: 500,
+                            color: "rgba(152, 142, 169, 1)",
+                            fontFamily: "Manrope",
+                            fontSize: { xs: '0.8rem', sm: '0.875rem', md: '1rem' }
+                        }}
+                    >
+                        Select and upload the files of your choice
+                    </Typography>
+                    <Box
+                        {...getRootProps()}
+                        sx={{
+                            border: '2px dashed rgba(41, 45, 50, 0.5)',
+                            borderRadius: '10px',
+                            paddingTop: "50px",
+                            paddingBottom: "50px",
+                            marginTop: '20px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: "center",
+                            flexDirection: 'column',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <input {...getInputProps()} />
+                        <Box
+                            sx={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                border: '2px solid rgba(203, 208, 220, 1)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginBottom: '5px'
+                            }}
+                        >
+                            <Box component={'img'} width={20} src="/images/uploadFile.svg" />
+                        </Box>
                         <Typography
                             gutterBottom
                             sx={{
                                 fontWeight: 500,
-                                color: "rgba(152, 142, 169, 1)",
+                                color: "rgba(41, 45, 50, 1)",
                                 fontFamily: "Manrope",
                                 fontSize: { xs: '0.725rem', sm: '0.875rem', md: '1rem' }
                             }}
                         >
-                            MP3, WAV, AIFF, and MP4 formats, up to 50MB
+                            Choose a file or drag & drop it here
                         </Typography>
-                    ) : (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '100%',
-                                textAlign: 'center'
-                            }}
-                        >
+                        {!file ? (
                             <Typography
                                 gutterBottom
                                 sx={{
@@ -248,107 +231,130 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
                                     fontSize: { xs: '0.725rem', sm: '0.875rem', md: '1rem' }
                                 }}
                             >
-                                {file.name}
+                                MP3, WAV, AIFF, and MP4 formats, up to 50MB
                             </Typography>
+                        ) : (
                             <Box
-                                onClick={(event) => {
-                                    event.stopPropagation();
-                                    setFile(null);
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: '100%',
+                                    textAlign: 'center'
                                 }}
-                                sx={{ ml: 0.5, color: "rgba(152, 142, 169, 1)" }}
                             >
-                                <DeleteIcon fontSize='small' className='mb-1' />
+                                <Typography
+                                    gutterBottom
+                                    sx={{
+                                        fontWeight: 500,
+                                        color: "rgba(152, 142, 169, 1)",
+                                        fontFamily: "Manrope",
+                                        fontSize: { xs: '0.725rem', sm: '0.875rem', md: '1rem' }
+                                    }}
+                                >
+                                    {file.name}
+                                </Typography>
+                                <Box
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        setFile(null);
+                                    }}
+                                    sx={{ ml: 0.5, color: "rgba(152, 142, 169, 1)" }}
+                                >
+                                    <DeleteIcon fontSize='small' className='mb-1' />
+                                </Box>
                             </Box>
-                        </Box>
-                    )}
-                    <Button sx={{
-                        padding: "2px 15px",
-                        color: "rgba(84, 87, 92, 1)",
-                        fontSize: { xs: '0.725rem', sm: '0.875rem', md: '1rem' },
-                        fontFamily: "Manrope",
-                        fontWeight: 400,
-                        mt: 1,
-                        borderRadius: "10px",
-                        border: '2px solid rgba(152, 142, 169, 1)',
-                        textTransform: "capitalize",
-                        textAlign: "center",
-                        '&:hover': {
-                            backgroundColor: "none",
-                        }
-                    }}>Browse File</Button>
-                </Box>
-                {errorFiles && (
-                    <Typography color="error" sx={{ mt: 2 }}>
-                        {errorFiles}
-                    </Typography>
-                )}
-                <Typography gutterBottom className='mt-5' sx={{
-                    fontWeight: 500,
-                    color: "rgba(41, 45, 50, 1)",
-                    fontFamily: "Manrope",
-                    fontSize: { xs: '1rem', sm: '1.2rem', md: '1.6rem' }
-                }}
-                >Include a message</Typography>
-                <TextField
-                    className='mb-1'
-                    variant='outlined'
-                    multiline
-                    maxRows={5}
-                    minRows={5}
-                    value={message}
-                    onChange={handleInputChange}
-                    InputProps={{
-                        style: {
+                        )}
+                        <Button sx={{
+                            padding: "2px 15px",
+                            color: "rgba(84, 87, 92, 1)",
+                            fontSize: { xs: '0.725rem', sm: '0.875rem', md: '1rem' },
+                            fontFamily: "Manrope",
+                            fontWeight: 400,
+                            mt: 1,
                             borderRadius: "10px",
-                        }, inputProps: {
-                            style: {
-                                fontSize: { xs: '0.725rem', sm: '1rem', md: '1rem' }
-                            }
-                        }
-
-                    }}
-
-                />
-                <Typography
-                    gutterBottom
-                    sx={{
-                        mb: 3,
-                        fontWeight: 500,
-                        color: "rgba(152, 142, 169, 1)",
-                        fontFamily: "Manrope",
-                        ml: 0.2,
-                        fontSize: { xs: '0.725rem', sm: '1rem', md: '1rem' },
-                        textAlign: 'left'
-                    }}
-                >
-                    {charCount}/{maxChars}
-                </Typography>
-                <Grid sx={{ margin: '0px auto', mb: 1.2 }}>
-                    <Button
-                        onClick={handleSubmit}
-                        disabled={!message || !file || loading}
-                        sx={{
-                            backgroundColor: "#FF5A59",
-                            padding: "14px 120px",
-                            color: "#fff",
-                            fontSize: "16px",
-                            borderRadius: "10px",
+                            border: '2px solid rgba(152, 142, 169, 1)',
                             textTransform: "capitalize",
                             textAlign: "center",
                             '&:hover': {
-                                backgroundColor: "#E04948",
-                            },
-                            '&.Mui-disabled': {
-                                backgroundColor: "rgba(255, 138, 138, 1)",
-                                color: "#fff",
-                                boxShadow: "rgba(0, 0, 0, 0.25)",
+                                backgroundColor: "none",
                             }
+                        }}>Browse File</Button>
+                    </Box>
+                    {errorFiles && (
+                        <Typography color="error" sx={{ mt: 2 }}>
+                            {errorFiles}
+                        </Typography>
+                    )}
+                    <Typography gutterBottom className='mt-5' sx={{
+                        fontWeight: 500,
+                        color: "rgba(41, 45, 50, 1)",
+                        fontFamily: "Manrope",
+                        fontSize: { xs: '1rem', sm: '1.2rem', md: '1.6rem' }
+                    }}
+                    >Include a message</Typography>
+                    <TextField
+                        className='mb-1'
+                        variant='outlined'
+                        multiline
+                        maxRows={5}
+                        minRows={5}
+                        value={message}
+                        onChange={handleInputChange}
+                        InputProps={{
+                            style: {
+                                borderRadius: "10px",
+                            }, inputProps: {
+                                style: {
+                                    fontSize: { xs: '0.725rem', sm: '1rem', md: '1rem' }
+                                }
+                            }
+
+                        }}
+
+                    />
+                    <Typography
+                        gutterBottom
+                        sx={{
+                            mb: 3,
+                            fontWeight: 500,
+                            color: "rgba(152, 142, 169, 1)",
+                            fontFamily: "Manrope",
+                            ml: 0.2,
+                            fontSize: { xs: '0.725rem', sm: '1rem', md: '1rem' },
+                            textAlign: 'left'
                         }}
                     >
-                        {loading ? <><FontAwesomeIcon icon={faSpinner} size="xl" spin color='#fff' /></> : 'Send'}
-                    </Button>
+                        {charCount}/{maxChars}
+                    </Typography>
+                    <Grid sx={{ margin: '0px auto', mb: 1.2 }}>
+                        <Button
+                            onClick={handleSubmit}
+                            disabled={!message || !file || loading}
+                            sx={{
+                                backgroundColor: "#FF5A59",
+                                padding: "14px 120px",
+                                color: "#fff",
+                                fontSize: "16px",
+                                borderRadius: "10px",
+                                textTransform: "capitalize",
+                                textAlign: "center",
+                                '&:hover': {
+                                    backgroundColor: "#E04948",
+                                },
+                                '&.Mui-disabled': {
+                                    backgroundColor: "rgba(255, 138, 138, 1)",
+                                    color: "#fff",
+                                    boxShadow: "rgba(0, 0, 0, 0.25)",
+                                }
+                            }}
+                        >
+                            {loading ? <><FontAwesomeIcon icon={faSpinner} size="xl" spin color='#fff' /></> : 'Send'}
+                        </Button>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </>
+        }
         </>
     );
 }
