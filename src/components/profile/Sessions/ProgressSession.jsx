@@ -122,22 +122,18 @@ const ProgressSession = ({ id, type }) => {
                     <Card sx={{ p: 0, mt: 2, boxShadow: "none", backgroundColor: "rgba(255, 252, 249, 1)" }}>
                         <CardContent sx={{ p: 0 }}>
                             {data.chatType === 'video' ?
-                                <Player
+                                <video
                                     playsInline
                                     src={data.chatMediaMessage}
-                                    fluid
-                                    aspectRatio='16:9'
+                                    controls
+                                    preload="auto"
+                                    width="100%"
+                                    height="auto"
+                                    style={{ aspectRatio: '16/9' }}
                                 >
-                                    <track
-                                        kind="captions"
-                                        src="/captions.vtt"
-                                        srcLang="en"
-                                        label="English"
-                                        default
-                                    />
-                                    <ControlBar autoHide />
-                                    <BigPlayButton position="center" />
-                                </Player>
+                                    Your browser does not support the video tag.
+                                </video>
+
                                 : data.chatType === 'audio' ?
                                     <Box sx={{ position: 'relative', mt: 1, width: { md: 400, sm: '100%' } }}>
                                         <Card sx={{
