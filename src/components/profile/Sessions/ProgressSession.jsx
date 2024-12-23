@@ -125,13 +125,13 @@ const ProgressSession = ({ id, type }) => {
                             {data.chatType === 'video' ?
                                 <video
                                     playsInline
-                                    src={data.chatMediaMessage}
                                     controls
                                     preload="auto"
                                     width="100%"
                                     height="auto"
                                     style={{ aspectRatio: '16/9' }}
                                 >
+                                    <source src={data.chatMediaMessage} type="video/mp4"></source>
                                     Your browser does not support the video tag.
                                 </video>
 
