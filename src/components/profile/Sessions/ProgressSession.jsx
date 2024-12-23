@@ -121,6 +121,7 @@ const ProgressSession = ({ id, type }) => {
                 <Grid item xs={12} md={8}>
                     <Card sx={{ p: 0, mt: 2, boxShadow: "none", backgroundColor: "rgba(255, 252, 249, 1)" }}>
                         <CardContent sx={{ p: 0 }}>
+                            <p>{data.chatMediaMessage}</p>
                             {data.chatType === 'video' ?
                                 <video
                                     playsInline
