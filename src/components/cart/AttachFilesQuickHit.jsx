@@ -18,6 +18,7 @@ import { useCookies } from 'react-cookie';
 import VideoComponent from './VideoComponent';
 import axios from 'axios';
 import SendingFile from './SendingFile';
+import crypto from 'crypto';
 
 
 const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
@@ -87,7 +88,13 @@ const AttachFilesQuickHit = ({ type, orderId, expertId, creditId }) => {
                 // Convert the file into an ArrayBuffer for uploading
                 const fileBuffer = await fileBlob.arrayBuffer();
                 console.log('fileBuffer', fileBuffer)
-                const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
+                // Create SHA256 hash and convert to Base64
+                const hash = crypto.createHash('sha256');
+                hash.update(Buffer.from(fileBuffer));
+                const hashedBase64 = hash.digest('base64');
+                console.log("Hashed Buffer (H256):", hashedBase64);
+
+                const uploadResponse = await axios.put(presignedUrl, hashedBase64, {
                     headers: {
                         'Content-Type': filetype, // Set the correct file type
                     },

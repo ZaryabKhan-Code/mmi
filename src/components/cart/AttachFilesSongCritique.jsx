@@ -93,15 +93,8 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
             const response = await AddMessage(localStorage.getItem('token'), formData);
 
             const presignedUrl = response.data.presignedUrl;
-            // Create SHA256 hash and convert to Base64
-            const hash = crypto.createHash('sha256');
-            hash.update(Buffer.from(fileBuffer));
-            const hashedBase64 = hash.digest('base64');
 
-
-            console.log("Hashed Buffer (H256):", hashedBase64);
-
-            const uploadResponse = await axios.put(presignedUrl, hashedBase64, {
+            const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
                 headers: {
                     'Content-Type': filetype,
                 },
