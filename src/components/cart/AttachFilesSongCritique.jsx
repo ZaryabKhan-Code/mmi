@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import SendingFile from './SendingFile';
+import crypto from 'crypto';
 
 const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
     const imageSize = {
@@ -93,7 +94,13 @@ const AttachFilesSongCritique = ({ type, orderId, expertId, creditId }) => {
             const response = await AddMessage(localStorage.getItem('token'), formData);
 
             const presignedUrl = response.data.presignedUrl;
-            const uploadResponse = await axios.put(presignedUrl, fileBuffer, {
+            const hash = crypto.createHash('sha256');
+            hash.update(Buffer.from(fileBuffer));
+            const hashedBuffer = hash.digest();
+
+            console.log("Hashed Buffer (H256):", hashedBuffer.toString('hex'));
+
+            const uploadResponse = await axios.put(presignedUrl, hashedBuffer, {
                 headers: {
                     'Content-Type': filetype,
                 },
